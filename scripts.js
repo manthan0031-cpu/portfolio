@@ -26,6 +26,7 @@
 
     const DOM = {};
     let lenis;
+    let heroTl;
 
     /* ==========================================
        SHARED MOUSE STATE (single listener)
@@ -675,7 +676,7 @@
         gsap.set('#heroCta', { y: 20, opacity: 0 });
         gsap.set('#scrollIndicator', { y: 16, opacity: 0 });
 
-        const heroTl = gsap.timeline({ delay: 0.25 });
+        heroTl = gsap.timeline({ paused: true, delay: 0.15 });
         heroTl
             .to('.nav', { y: 0, opacity: 1, duration: 1.25, ease: 'power3.out' })
             .to('#heroEyebrow span', { y: 0, opacity: 1, duration: 1.1, ease: 'power3.out' }, '-=1.05')
@@ -872,6 +873,99 @@
     }
 
     /* ==========================================
+       PREMIUM LOADING SCREEN
+       ========================================== */
+    window.shaderBackgroundReady = false;
+
+    function initLoader(onCompleteCallback) {
+        const bar = document.getElementById("loaderBar");
+        const percent = document.getElementById("loaderPercent");
+        const wrapper = document.getElementById("loaderWrapper");
+        if (!wrapper || !bar || !percent) {
+            document.body.classList.remove('loading-active');
+            document.documentElement.classList.remove('loading-active');
+            onCompleteCallback();
+            return;
+        }
+
+        const progress = { value: 0 };
+        let isLoaded = false;
+
+        // Track standard window load event
+        window.addEventListener('load', () => {
+            isLoaded = true;
+        }, { passive: true });
+
+        if (document.readyState === 'complete') {
+            isLoaded = true;
+        }
+
+        // Start slow linear progress from 0 to 90 (simulating initial layout)
+        const loaderTween = gsap.to(progress, {
+            value: 90,
+            duration: 3.5,
+            ease: "power1.out",
+            onUpdate: () => {
+                const val = Math.min(90, Math.floor(progress.value));
+                bar.style.width = val + "%";
+                percent.textContent = String(val).padStart(2, "0");
+            }
+        });
+
+        // Actively check for asset load AND WebGL shader compilation (ready flag)
+        const checkInterval = setInterval(() => {
+            if (isLoaded && window.shaderBackgroundReady) {
+                clearInterval(checkInterval);
+                loaderTween.kill(); // Kill the slow tween
+
+                // Accelerate smoothly to 100%
+                gsap.to(progress, {
+                    value: 100,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    onUpdate: () => {
+                        const val = Math.floor(progress.value);
+                        bar.style.width = val + "%";
+                        percent.textContent = String(val).padStart(2, "0");
+                    },
+                    onComplete: finishLoader
+                });
+            }
+        }, 30);
+
+        // Failsafe backup (5.0s max load timeout)
+        setTimeout(() => {
+            if (!isLoaded || !window.shaderBackgroundReady) {
+                isLoaded = true;
+                window.shaderBackgroundReady = true;
+            }
+        }, 5000);
+
+        function finishLoader() {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    wrapper.style.display = "none";
+                    document.body.classList.remove('loading-active');
+                    document.documentElement.classList.remove('loading-active');
+                    onCompleteCallback();
+                }
+            });
+
+            tl.to(".loader-content", { 
+                opacity: 0, 
+                y: -15, 
+                duration: 0.45, 
+                ease: "power2.inOut" 
+            })
+            .to(wrapper, { 
+                opacity: 0, 
+                duration: 0.75, 
+                ease: "power3.inOut" 
+            }, "-=0.15");
+        }
+    }
+
+    /* ==========================================
        FOUC PREVENTION
        ========================================== */
     function revealPage() {
@@ -886,7 +980,6 @@
     function init() {
         try {
             cacheDOM();
-            initLenis();
             initMagnetic();
             initMenu();
             initNavScroll();
@@ -903,13 +996,23 @@
             initInteractiveCtaRings();
             initFooterShader();
             initResizeHandler();
-            // Defer ScrollTrigger refresh to next frame after layout settles
-            requestAnimationFrame(() => {
-                setTimeout(() => { ScrollTrigger.refresh(); }, 50);
+            
+            // Defer ScrollTrigger refresh & page reveal after loader ends
+            initLoader(() => {
+                initLenis();
+                revealPage();
+                if (heroTl) heroTl.play();
+                
+                // Refresh ScrollTrigger properties once layout is settled
+                requestAnimationFrame(() => {
+                    setTimeout(() => { ScrollTrigger.refresh(); }, 50);
+                });
             });
-            revealPage();
         } catch (e) {
             console.error("Init Error:", e);
+            document.body.classList.remove('loading-active');
+            document.documentElement.classList.remove('loading-active');
+            initLenis();
             revealPage(); // Always reveal page even on error
         }
     }
