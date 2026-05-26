@@ -32,7 +32,8 @@ html {
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
+    /* scroll-behavior handled by Lenis — do NOT add scroll-behavior:smooth here */
+    scroll-behavior: auto;
 }
 
 body { 
@@ -67,10 +68,11 @@ body {
     width: 200%; height: 200%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.035;
+    opacity: 0.032;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     animation: grainDrift 10s steps(12) infinite;
     mix-blend-mode: overlay;
+    /* No will-change — 200%x200% GPU layer wastes VRAM */
 }
 @keyframes grainDrift {
     0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-5%)}20%{transform:translate(-5%,3%)}30%{transform:translate(3%,-8%)}40%{transform:translate(-3%,8%)}50%{transform:translate(-6%,4%)}60%{transform:translate(6%,0)}70%{transform:translate(0,5%)}80%{transform:translate(2%,10%)}90%{transform:translate(-4%,4%)}
@@ -461,8 +463,11 @@ body {
 .section {
     position: relative;
     padding: 10rem 4vw 12rem;
-    background: var(--parchment); 
+    background: var(--parchment);
     overflow: hidden;
+    /* Skip rendering cost for offscreen sections */
+    content-visibility: auto;
+    contain-intrinsic-size: 0 800px;
 }
 .section-header {
     max-width: 1440px; margin: 0 auto;
@@ -519,22 +524,22 @@ body {
 .card {
     position: relative;
     border-radius: 18px;
-    overflow: hidden; 
+    overflow: hidden;
     cursor: none;
-    transition: transform .6s var(--ease-smooth), box-shadow .6s var(--ease-smooth);
+    transition: transform .5s var(--ease-smooth), box-shadow .5s var(--ease-smooth);
     transform-style: preserve-3d;
-    will-change: transform;
+    /* will-change added on hover only via JS to avoid excessive layers */
     background: transparent;
+    contain: layout;
 }
 .card-inner {
     background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.45);
     overflow: hidden;
-    transition: transform .6s var(--ease-smooth), box-shadow .6s var(--ease-smooth), border-color .6s var(--ease-smooth), background-color .6s var(--ease-smooth);
-    will-change: transform;
+    transition: transform .5s var(--ease-smooth), box-shadow .5s var(--ease-smooth), border-color .5s var(--ease-smooth);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
 }
 .card:hover {
@@ -820,24 +825,20 @@ body {
     }
 }
 
-/* Sibling Focus Blur Effect on Headings and Subheadings */
+/* Sibling Focus Blur Effect — opacity+transform only (no filter for perf) */
 .interactive-blur-text .blur-word {
     display: inline-block;
-    transition: filter 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
-                opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
-                transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    will-change: filter, opacity, transform;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .interactive-blur-text:hover .blur-word {
-    filter: blur(0.7px);
-    opacity: 0.88;
+    opacity: 0.55;
 }
 
 .interactive-blur-text .blur-word:hover {
-    filter: blur(0px);
     opacity: 1;
-    transform: scale(1.02);
+    transform: scale(1.025);
 }
 
 /* ===== PROCESS SECTION ===== */
@@ -1275,7 +1276,7 @@ body {
 .word-animate {
     display: inline-block;
     opacity: 0;
-    will-change: transform, opacity, filter;
+    will-change: transform, opacity;
 }
 
 @keyframes word-appear {
@@ -1361,7 +1362,7 @@ body {
     pointer-events: none;
     z-index: 99999;
     transform: translate(-50%, -50%);
-    will-change: width, height, opacity, transform;
+    /* No will-change on ripple - short-lived element, compositing cost > benefit */
 }
 
 .mouse-gradient-glow {
@@ -1371,9 +1372,11 @@ body {
     pointer-events: none;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255, 107, 53, 0.04), rgba(212, 197, 181, 0.03), transparent 70%);
+    /* Use transform for positioning (no layout reflow) */
     transform: translate(-50%, -50%);
+    top: 0; left: 0;
     z-index: -5;
-    will-change: left, top, opacity;
+    will-change: transform;
     opacity: 0;
     transition: opacity 0.5s ease-out;
 }

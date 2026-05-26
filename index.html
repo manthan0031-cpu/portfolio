@@ -14,9 +14,11 @@
     <!-- Primary Fonts (Cormorant Garamond & Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
+    <!-- Core animation libs (sync: scripts.js depends on them at DOMContentLoaded) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <!-- Lenis deferred — NOT needed before first paint -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="mobile.css">
@@ -45,8 +47,22 @@
     <title>Manthan's ART Gallery — Web Projects (Preview Mode)</title>
 
     <style>
-        html{opacity:0;transition:opacity .5s ease}
-        html.loaded{opacity:1}
+        /* === FOUC PREVENTION === */
+        html { opacity: 0; }
+        html.loaded { opacity: 1; transition: opacity 0.25s ease; }
+
+        /* === PRE-HIDE HERO ELEMENTS === */
+        /* These are hidden via CSS BEFORE scripts run - eliminates the */
+        /* flash where elements are visible then GSAP collapses them    */
+        .nav { opacity: 0; transform: translateY(-24px); }
+        #heroEyebrow span { opacity: 0; transform: translateY(24px); }
+        .word-animate { opacity: 0; transform: translateY(28px) scaleY(0.94); }
+        #heroSubline span { opacity: 0; transform: translateY(20px); }
+        #heroCta { opacity: 0; transform: translateY(20px); }
+        #scrollIndicator { opacity: 0; transform: translateY(16px); }
+        .hero-side-label { opacity: 0; }
+        .float-preview.left  { opacity: 0; }
+        .float-preview.right { opacity: 0; }
     </style>
 </head>
 <body>
@@ -888,7 +904,7 @@
             worth making, I'd love to hear about it.
         </p>
         <div class="cta-buttons">
-            <a href="mailto:hello@yourname.com" class="btn-primary" data-magnetic>
+            <a href="mailto:manthan0031@gmail.com" class="btn-primary" data-magnetic>
                 Send a Message
             </a>
             <a href="#projects" class="btn-secondary" data-magnetic>
@@ -898,9 +914,8 @@
     </div>
 </section>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="scripts.js"></script>
-<!-- Three.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -1037,8 +1052,8 @@
             const mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
 
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setPixelRatio(window.devicePixelRatio);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             container.appendChild(renderer.domElement);
 
             // Cursor responsive tracking with smooth interpolation (lerp)
@@ -1081,17 +1096,14 @@
 
             const animate = () => {
                 requestAnimationFrame(animate);
-                
-                // Lerp mouse coordinates for buttery smooth cursor responsive feedback
+                if (document.hidden) return; // Skip when tab not visible
+
                 currentMouse.x += (targetMouse.x - currentMouse.x) * 0.07;
                 currentMouse.y += (targetMouse.y - currentMouse.y) * 0.07;
-
-                // Smoothly lerp time speed scale
                 currentTimeSpeed += (targetTimeSpeed - currentTimeSpeed) * 0.08;
                 uniforms.time.value += 0.016 * currentTimeSpeed;
                 uniforms.mouse.value.x = currentMouse.x;
                 uniforms.mouse.value.y = currentMouse.y;
-
                 renderer.render(scene, camera);
             };
 
@@ -1108,6 +1120,8 @@
                 underlinePath.style.strokeDashoffset = length;
                 // Force reflow
                 underlinePath.getBoundingClientRect();
+                underlinePath.style.transition = `stroke-dashoffset 2.6s cubic-bezier(0.25, 1, 0.5, 1) 1.4s`;
+                underlinePath.style.strokeDashoffset = "0";
 
                 // Setup interactive hover morph using GSAP for absolute reliability
                 const highlightEl = document.querySelector(".underline-highlight");
@@ -1219,21 +1233,23 @@
             });
         };
 
-        // --- 5. Mouse Spotlight Glow ---
+        // --- 5. Mouse Spotlight Glow --- uses transform (no layout reflow)
         const initMouseSpotlight = () => {
             const mouseGlow = document.getElementById("mouse-gradient");
-            if (!mouseGlow) return;
+            if (!mouseGlow || window.matchMedia('(pointer: coarse)').matches) return;
 
             let glowX = window.innerWidth / 2;
             let glowY = window.innerHeight / 2;
             let targetGlowX = glowX;
             let targetGlowY = glowY;
+            let rafId = null;
 
             window.addEventListener("mousemove", (e) => {
                 targetGlowX = e.clientX;
                 targetGlowY = e.clientY;
                 mouseGlow.style.opacity = "1";
-            });
+                if (!rafId) rafId = requestAnimationFrame(updateGlow);
+            }, { passive: true });
 
             window.addEventListener("mouseleave", () => {
                 mouseGlow.style.opacity = "0";
@@ -1242,12 +1258,15 @@
             const updateGlow = () => {
                 glowX += (targetGlowX - glowX) * 0.08;
                 glowY += (targetGlowY - glowY) * 0.08;
-                mouseGlow.style.left = `${glowX}px`;
-                mouseGlow.style.top = `${glowY}px`;
-                requestAnimationFrame(updateGlow);
+                mouseGlow.style.transform = `translate(calc(${glowX}px - 50%), calc(${glowY}px - 50%))`;
+                const dx = Math.abs(targetGlowX - glowX);
+                const dy = Math.abs(targetGlowY - glowY);
+                if (dx > 0.5 || dy > 0.5) {
+                    rafId = requestAnimationFrame(updateGlow);
+                } else {
+                    rafId = null;
+                }
             };
-
-            updateGlow();
         };
 
         // Run initializations
