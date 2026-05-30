@@ -17,7 +17,7 @@
     <!-- Core animation libs (sync: scripts.js depends on them at DOMContentLoaded) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- Lenis deferred — NOT needed before first paint -->
+    <!-- Lenis & Three.js deferred — NOT needed before first paint -->
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
 
     <link rel="stylesheet" href="styles.css">
@@ -45,6 +45,7 @@
     </script>
 
     <title>Manthan's ART Gallery — Web Projects (Preview Mode)</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 
     <style>
         /* === FOUC & SCROLL LOCK === */
@@ -71,12 +72,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #E8DDD4;
+            background-color: rgba(232, 221, 212, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: all;
+        }
+        body.loading-active #shader-background {
+            z-index: 9990 !important;
+            opacity: 0.58 !important;
         }
         .loader-content {
             display: flex;
@@ -138,8 +145,6 @@
         }
 
         /* === PRE-HIDE HERO ELEMENTS === */
-        /* These are hidden via CSS BEFORE scripts run - eliminates the */
-        /* flash where elements are visible then GSAP collapses them    */
         .nav { opacity: 0; transform: translateY(-24px); }
         #heroEyebrow span { opacity: 0; transform: translateY(24px); }
         .word-animate { opacity: 0; transform: translateY(28px) scaleY(0.94); }
@@ -659,9 +664,11 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
+
 
 <section class="section" id="projects" aria-labelledby="projectsTitle">
     <div class="section-header">
@@ -685,8 +692,112 @@
 
     <div class="card-grid" id="cardGrid">
 
-        <!-- Card 1: Luxe Interiors Studio -->
-        <article class="card" data-category="web" data-magnetic>
+        <!-- Card 0: Featured / Best Website -->
+        <article class="card wide" id="featured-card" data-category="web" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">mybestwebsite.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&h=640&fit=crop&q=80" alt="My Best Website preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title-col">
+                        <div class="card-tags">
+                            <span class="card-tag">Featured Project</span>
+                            <span class="card-tag">3D Experience</span>
+                            <span class="card-tag">Web Design</span>
+                        </div>
+                        <h3 class="card-title">My Best Website</h3>
+                    </div>
+                    <div class="card-desc-col">
+                        <p class="card-desc">An elite, immersive 3D digital experience that pushes the boundaries of web design. Built using React, Three.js, and custom GLSL noise shaders to create a fluid, responsive showcase.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">React / WebGL / GSAP</span>
+                            <div class="card-arrow-unlinked">
+                                Coming Soon
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 1: Urban Cravin -->
+        <article class="card" id="urbancravin-card" data-category="ecomm" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">urbancravin.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&h=460&fit=crop&q=80" alt="Urban Cravin preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/urbancravin-showcase.html" class="card-link-btn" aria-label="View Urban Cravin project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">E-Commerce</span>
+                        <span class="card-tag">Shopify</span>
+                        <span class="card-tag">Streetwear</span>
+                    </div>
+                    <h3 class="card-title">Urban Cravin</h3>
+                    <p class="card-desc">Engineered a high-performance headless Shopify storefront for a Gen-Z streetwear brand. Integrates lightning-fast custom filtering and dynamic AOV cart drawer upsells, achieving a 4.2% storefront conversion rate.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Shopify / Liquid / JS</span>
+                        <a href="projects/urbancravin-showcase.html" class="card-arrow" aria-label="View Urban Cravin">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 2: Jiyo Shop -->
+        <article class="card" id="jiyo-card" data-category="ecomm" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">jiyoshop.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=460&fit=crop&q=80" alt="Jiyo Shop preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/jiyo-showcase.html" class="card-link-btn" aria-label="View Jiyo Shop project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">E-Commerce</span>
+                        <span class="card-tag">Shopify</span>
+                    </div>
+                    <h3 class="card-title">Jiyo Shop</h3>
+                    <p class="card-desc">Designed and developed a bespoke Shopify 2.0 brand experience scaling organic Indian slow fashion. Hand-coded custom clusters and a story-driven Ajax drawer cart to reduce abandonment by 32%.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Shopify / Liquid / UX Architecture</span>
+                        <a href="projects/jiyo-showcase.html" class="card-arrow" aria-label="View Jiyo Shop">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3: Luxe Interiors Studio -->
+        <article class="card" id="luxe-interiors-card" data-category="web" data-magnetic>
             <div class="card-inner">
                 <div class="card-browser" aria-hidden="true">
                     <div class="browser-dot bd-r"></div>
@@ -697,21 +808,20 @@
                 <div class="card-image-wrap">
                     <img class="card-image" src="https://images.unsplash.com/photo-1618219944342-824e40a13285?w=600&h=460&fit=crop&q=80" alt="Luxe Interiors Studio preview" loading="lazy" decoding="async">
                     <div class="card-overlay"></div>
-                    <a href="#" class="card-link-btn" aria-label="View Luxe Interiors project">
+                    <a href="projects/luxe-interiors.html" class="card-link-btn" aria-label="View Luxe Interiors project">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
                     </a>
                 </div>
                 <div class="card-content">
                     <div class="card-tags">
-                        <span class="card-tag featured">Featured</span>
                         <span class="card-tag">Web Design</span>
                         <span class="card-tag">Animation</span>
                     </div>
                     <h3 class="card-title">Luxe Interiors Studio</h3>
-                    <p class="card-desc">A premium interior design studio website with immersive scroll-driven animations, custom cursor interactions, and a lighthouse score of 98.</p>
+                    <p class="card-desc">Architected an immersive digital atelier for a luxury interior design agency. Deployed high-fidelity GSAP ScrollTrigger timelines, custom magnetic cursor interactions, and WebGL noise shader grids.</p>
                     <div class="card-footer">
-                        <span class="card-meta">HTML / CSS / GSAP</span>
-                        <a href="#" class="card-arrow" aria-label="View Luxe Interiors">
+                        <span class="card-meta">HTML5 / CSS3 / GSAP / Three.js</span>
+                        <a href="projects/luxe-interiors.html" class="card-arrow" aria-label="View Luxe Interiors">
                             View Project
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
@@ -720,8 +830,8 @@
             </div>
         </article>
 
-        <!-- Card 2: Dashflow Analytics -->
-        <article class="card" data-category="app" data-magnetic>
+        <!-- Card 4: Dashflow Analytics -->
+        <article class="card" id="dashflow-analytics-card" data-category="app" data-magnetic>
             <div class="card-inner">
                 <div class="card-browser" aria-hidden="true">
                     <div class="browser-dot bd-r"></div>
@@ -732,7 +842,7 @@
                 <div class="card-image-wrap">
                     <img class="card-image" src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=460&fit=crop&q=80" alt="Dashflow Analytics preview" loading="lazy" decoding="async">
                     <div class="card-overlay"></div>
-                    <a href="#" class="card-link-btn" aria-label="View Dashflow project">
+                    <a href="projects/dashflow-analytics.html" class="card-link-btn" aria-label="View Dashflow project">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
                     </a>
                 </div>
@@ -742,10 +852,10 @@
                         <span class="card-tag">Dashboard</span>
                     </div>
                     <h3 class="card-title">Dashflow Analytics</h3>
-                    <p class="card-desc">A real-time analytics dashboard for SaaS teams with live charts, dark/light theming, and role-based access.</p>
+                    <p class="card-desc">Programmed a real-time data monitoring SaaS dashboard. Scaled data rendering loops, custom Chart.js panels, role-based client controls, and dark/light dynamic theme transitions.</p>
                     <div class="card-footer">
-                        <span class="card-meta">React / Tailwind</span>
-                        <a href="#" class="card-arrow" aria-label="View Dashflow">
+                        <span class="card-meta">React / Tailwind CSS / Charts</span>
+                        <a href="projects/dashflow-analytics.html" class="card-arrow" aria-label="View Dashflow">
                             View
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
@@ -754,8 +864,8 @@
             </div>
         </article>
 
-        <!-- Card 3: Terra Verde Shop -->
-        <article class="card" data-category="ecomm" data-magnetic>
+        <!-- Card 5: Terra Verde Shop -->
+        <article class="card" id="terra-verde-card" data-category="ecomm" data-magnetic>
             <div class="card-inner">
                 <div class="card-browser" aria-hidden="true">
                     <div class="browser-dot bd-r"></div>
@@ -766,7 +876,7 @@
                 <div class="card-image-wrap">
                     <img class="card-image" src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=460&fit=crop&q=80" alt="Terra Verde Shop preview" loading="lazy" decoding="async">
                     <div class="card-overlay"></div>
-                    <a href="#" class="card-link-btn" aria-label="View Terra Verde project">
+                    <a href="projects/terra-verde.html" class="card-link-btn" aria-label="View Terra Verde project">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
                     </a>
                 </div>
@@ -776,10 +886,10 @@
                         <span class="card-tag">Shopify</span>
                     </div>
                     <h3 class="card-title">Terra Verde Shop</h3>
-                    <p class="card-desc">A sustainable lifestyle brand store with custom Shopify theme, product configurator, and seamless checkout.</p>
+                    <p class="card-desc">Built an eco-conscious digital catalog with a custom-engineered 3D product configurator natively in Liquid and JavaScript. Reduced checkout friction to boost Average Order Value (AOV) by 42%.</p>
                     <div class="card-footer">
-                        <span class="card-meta">Shopify / Liquid</span>
-                        <a href="#" class="card-arrow" aria-label="View Terra Verde">
+                        <span class="card-meta">Shopify / Liquid / WebGL Configurator</span>
+                        <a href="projects/terra-verde.html" class="card-arrow" aria-label="View Terra Verde">
                             View
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
@@ -788,8 +898,8 @@
             </div>
         </article>
 
-        <!-- Card 4: Meridian Architecture -->
-        <article class="card" data-category="web" data-magnetic>
+        <!-- Card 6: Meridian Architecture -->
+        <article class="card" id="meridian-architecture-card" data-category="web" data-magnetic>
             <div class="card-inner">
                 <div class="card-browser" aria-hidden="true">
                     <div class="browser-dot bd-r"></div>
@@ -800,7 +910,7 @@
                 <div class="card-image-wrap">
                     <img class="card-image" src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&h=460&fit=crop&q=80" alt="Meridian Architecture preview" loading="lazy" decoding="async">
                     <div class="card-overlay"></div>
-                    <a href="#" class="card-link-btn" aria-label="View Meridian project">
+                    <a href="projects/meridian-architecture.html" class="card-link-btn" aria-label="View Meridian project">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
                     </a>
                 </div>
@@ -810,10 +920,10 @@
                         <span class="card-tag">3D</span>
                     </div>
                     <h3 class="card-title">Meridian Architecture</h3>
-                    <p class="card-desc">Award-winning architecture firm website with WebGL-powered 3D building tours and scroll-driven storytelling.</p>
+                    <p class="card-desc">Orchestrated a highly immersive digital narrative for an award-winning architecture firm. Features interactive 3D WebGL-powered structural tours and butter-smooth scrolling animations.</p>
                     <div class="card-footer">
-                        <span class="card-meta">Three.js / GSAP</span>
-                        <a href="#" class="card-arrow" aria-label="View Meridian">
+                        <span class="card-meta">Three.js / GSAP / WebGL</span>
+                        <a href="projects/meridian-architecture.html" class="card-arrow" aria-label="View Meridian">
                             View
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
@@ -996,10 +1106,6 @@
         <h2 class="cta-headline">
             Have a project<br>in <em>mind?</em>
         </h2>
-        <p class="cta-subtext">
-            I'm selectively taking on new projects. If you're building something 
-            worth making, I'd love to hear about it.
-        </p>
         <div class="cta-buttons">
             <a href="mailto:manthan0031@gmail.com" class="btn-primary" data-magnetic>
                 Send a Message
@@ -1010,6 +1116,8 @@
         </div>
     </div>
 </section>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="scripts.js"></script>
@@ -1149,8 +1257,8 @@
             const mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
 
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false }); // no antialias on fullscreen BG
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // cap for perf
             container.appendChild(renderer.domElement);
 
             // Cursor responsive tracking with smooth interpolation (lerp)
@@ -1159,8 +1267,8 @@
 
             window.addEventListener("mousemove", (e) => {
                 targetMouse.x = e.clientX;
-                targetMouse.y = window.innerHeight - e.clientY; // Flip Y for WebGL
-            });
+                targetMouse.y = window.innerHeight - e.clientY;
+            }, { passive: true });
 
             const onWindowResize = () => {
                 const rect = container.getBoundingClientRect();
@@ -1173,7 +1281,6 @@
 
             onWindowResize();
             window.addEventListener("resize", onWindowResize, false);
-
             // Dynamic shader velocity (time) scale on discipline hovers
             let targetTimeSpeed = 1.0;
             let currentTimeSpeed = 1.0;
@@ -1193,7 +1300,8 @@
 
             const animate = () => {
                 requestAnimationFrame(animate);
-                if (document.hidden) return; // Skip when tab not visible
+                // Skip rendering when tab is hidden (saves GPU)
+                if (document.hidden) return;
 
                 currentMouse.x += (targetMouse.x - currentMouse.x) * 0.07;
                 currentMouse.y += (targetMouse.y - currentMouse.y) * 0.07;
@@ -1275,7 +1383,7 @@
             const duration = Math.random() * 0.7 + 0.55; // Fast blink
             
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", "M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 20.7858 9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z");
+            path.setAttribute("d", "M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 20.7858 11.1746 20.1562L9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z");
             path.setAttribute("fill", color);
             
             sparkle.appendChild(path);
@@ -1331,7 +1439,7 @@
             });
         };
 
-        // --- 5. Mouse Spotlight Glow --- uses transform (no layout reflow)
+        // --- 5. Mouse Spotlight Glow — uses transform (no layout reflow) ---
         const initMouseSpotlight = () => {
             const mouseGlow = document.getElementById("mouse-gradient");
             if (!mouseGlow || window.matchMedia('(pointer: coarse)').matches) return;
@@ -1356,6 +1464,7 @@
             const updateGlow = () => {
                 glowX += (targetGlowX - glowX) * 0.08;
                 glowY += (targetGlowY - glowY) * 0.08;
+                // transform: avoids layout reflow (vs left/top)
                 mouseGlow.style.transform = `translate(calc(${glowX}px - 50%), calc(${glowY}px - 50%))`;
                 const dx = Math.abs(targetGlowX - glowX);
                 const dy = Math.abs(targetGlowY - glowY);

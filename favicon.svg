@@ -1,0 +1,17 @@
+<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Beige Background matching the portfolio theme -->
+  <rect width="512" height="512" rx="80" fill="#E8DDD4"/>
+  
+  <!-- Architectural M -->
+  <path d="M 130,390 L 130,150 L 256,270 L 382,150 L 382,390" stroke="#1A1A1A" stroke-width="48" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  
+  <!-- Expressive Calligraphic Horizontal Stroke -->
+  <path d="M 100,305 C 180,285 330,325 412,305" stroke="#FF6B35" stroke-width="36" stroke-linecap="round" stroke-dasharray="350" stroke-dashoffset="350">
+    <animate attributeName="stroke-dashoffset" from="350" to="0" dur="2s" fill="freeze" />
+  </path>
+  
+  <!-- Premium pulsing vertical teardrop/kinetic spark -->
+  <path d="M 256,140 C 248,122 248,93 256,75 C 264,93 264,122 256,140 Z" fill="#FF6B35">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+  </path>
+</svg>

@@ -416,11 +416,18 @@
         const nav = document.getElementById('nav');
         if (!contactSection) return;
 
+        const isCaseStudy = document.body.classList.contains('case-study-page');
+
+        // Use hardcoded colors to avoid reading incorrect colors during loading/rendering states
+        const originalBgColor = isCaseStudy 
+            ? (document.body.classList.contains('theme-light-book') ? '#F9F6F0' : '#121212')
+            : '#E8DDD4';
+
         gsap.registerPlugin(ScrollTrigger);
 
         ScrollTrigger.create({
             trigger: contactSection,
-            start: 'top 80%',
+            start: isCaseStudy ? 'top 45%' : 'top 30%',
             end: 'bottom bottom',
             onEnter: () => {
                 gsap.to('html', { backgroundColor: '#000000', duration: 0.8, ease: 'power2.out' });
@@ -430,7 +437,7 @@
                 if (nav) nav.classList.add('dark-nav');
             },
             onLeaveBack: () => {
-                gsap.to('html', { backgroundColor: '#E8DDD4', duration: 0.8, ease: 'power2.out' });
+                gsap.to('html', { backgroundColor: originalBgColor, duration: 0.8, ease: 'power2.out' });
                 gsap.to('body', { backgroundColor: 'transparent', duration: 0.8, ease: 'power2.out' });
                 if (shaderBg) gsap.to(shaderBg, { opacity: 0.58, duration: 0.8, ease: 'power2.out' });
                 if (footerShader) gsap.to(footerShader, { opacity: 0, duration: 0.8, ease: 'power2.out' });
@@ -603,7 +610,8 @@
             '#projects .section-title, #projects .section-desc, ' +
             '#about .about-headline, #about .about-sub-hook, ' +
             '#process .section-title, #process .section-desc, ' +
-            '.cta-headline, .cta-subtext'
+            '.cta-headline, .cta-subtext, ' +
+            '.case-study-title, .case-study-eyebrow, .study-heading, .study-text'
         );
 
         targets.forEach(el => {
@@ -953,15 +961,15 @@
 
             tl.to(".loader-content", { 
                 opacity: 0, 
-                y: -15, 
-                duration: 0.45, 
+                y: -30, 
+                duration: 0.5, 
                 ease: "power2.inOut" 
             })
             .to(wrapper, { 
-                opacity: 0, 
-                duration: 0.75, 
-                ease: "power3.inOut" 
-            }, "-=0.15");
+                yPercent: -100,
+                duration: 1.1, 
+                ease: "power4.inOut" 
+            }, "-=0.25");
         }
     }
 
@@ -975,6 +983,162 @@
     }
 
     /* ==========================================
+       CASE STUDY ANIMATIONS
+       ========================================== */
+    function initCaseStudyAnimations() {
+        if (STATE.reducedMotion) {
+            gsap.set(['.case-study-eyebrow', '.case-study-title .word-animate', '.case-study-meta-grid > *', '.case-study-hero-img-wrap'], { opacity: 1, y: 0, scale: 1 });
+            return;
+        }
+
+        // Pre-hide case study hero elements (to align with pre-hide styling)
+        gsap.set('.case-study-eyebrow', { y: 16, opacity: 0 });
+        gsap.set('.case-study-title .word-animate', { y: 28, opacity: 0, scale: 0.94 });
+        gsap.set('.case-study-meta-grid > *', { y: 16, opacity: 0 });
+        gsap.set('.case-study-hero-img-wrap', { scale: 0.95, opacity: 0 });
+
+        heroTl = gsap.timeline({ paused: true, delay: 0.15 });
+        heroTl
+            .to('.nav', { y: 0, opacity: 1, duration: 1.25, ease: 'power3.out' })
+            .to('.case-study-eyebrow', { y: 0, opacity: 0.85, duration: 1.0, ease: 'power3.out' }, '-=1.05')
+            .to('.case-study-title .word-animate', { y: 0, opacity: 1, scale: 1, duration: 1.4, stagger: 0.08, ease: 'power3.out' }, '-=0.95')
+            .to('.case-study-meta-grid > *', { y: 0, opacity: 1, duration: 1.0, stagger: 0.06, ease: 'power3.out' }, '-=1.15')
+            .to('.case-study-hero-img-wrap', { scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' }, '-=1.2')
+            .fromTo('.case-study-hero-img', { scale: 1.15 }, { scale: 1.0, duration: 2.2, ease: 'power2.out' }, '-=1.5');
+
+        // Scroll reveals for asymmetrical editorial content blocks
+        const revealSections = document.querySelectorAll('.case-study-section');
+        revealSections.forEach(sec => {
+            const label = sec.querySelector('.section-label-study');
+            const heading = sec.querySelector('.study-heading');
+            const items = sec.querySelectorAll('.study-text, .gallery-item, .col-sidebar > *');
+
+            const secTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sec,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                }
+            });
+
+            if (label) {
+                gsap.set(label, { y: 12, opacity: 0 });
+                secTl.to(label, { y: 0, opacity: 0.45, duration: 0.7, ease: 'power3.out' });
+            }
+            if (heading) {
+                gsap.set(heading, { y: 16, opacity: 0 });
+                secTl.to(heading, { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out' }, label ? '-=0.5' : 0);
+            }
+            if (items.length) {
+                gsap.set(items, { y: 20, opacity: 0 });
+                secTl.to(items, { y: 0, opacity: 1, duration: 1.0, stagger: 0.07, ease: 'power3.out' }, '-=0.7');
+            }
+        });
+    }
+
+    /* ==========================================
+       MOUSE SPOTLIGHT GLOW
+       ========================================== */
+    function initMouseSpotlight() {
+        const mouseGlow = document.getElementById("mouse-gradient");
+        if (!mouseGlow || window.matchMedia('(pointer: coarse)').matches) return;
+
+        let glowX = window.innerWidth / 2;
+        let glowY = window.innerHeight / 2;
+        let targetGlowX = glowX;
+        let targetGlowY = glowY;
+        let rafId = null;
+
+        window.addEventListener("mousemove", (e) => {
+            targetGlowX = e.clientX;
+            targetGlowY = e.clientY;
+            mouseGlow.style.opacity = "1";
+            if (!rafId) rafId = requestAnimationFrame(updateGlow);
+        }, { passive: true });
+
+        window.addEventListener("mouseleave", () => {
+            mouseGlow.style.opacity = "0";
+        });
+
+        function updateGlow() {
+            glowX += (targetGlowX - glowX) * 0.08;
+            glowY += (targetGlowY - glowY) * 0.08;
+            mouseGlow.style.transform = `translate(calc(${glowX}px - 50%), calc(${glowY}px - 50%))`;
+            const dx = Math.abs(targetGlowX - glowX);
+            const dy = Math.abs(targetGlowY - glowY);
+            if (dx > 0.5 || dy > 0.5) {
+                rafId = requestAnimationFrame(updateGlow);
+            } else {
+                rafId = null;
+            }
+        }
+    }
+
+    /* ==========================================
+       DYNAMIC SPARKLES EFFECT
+       ========================================== */
+    function initSparkles() {
+        const container = document.querySelector(".sparkles-container");
+        if (!container) return;
+
+        const colors = ["#FF6B35", "#E6C594", "#F4A261"];
+        const sparklesCount = 12;
+        
+        for (let i = 0; i < sparklesCount; i++) {
+            createSparkle(container, colors);
+        }
+
+        function createSparkle(container, colors) {
+            const sparkle = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            sparkle.setAttribute("viewBox", "0 0 21 21");
+            sparkle.style.position = "absolute";
+            sparkle.style.width = "18px";
+            sparkle.style.height = "18px";
+            sparkle.style.pointerEvents = "none";
+            sparkle.style.zIndex = "20";
+            
+            const x = Math.random() * 100;
+            const y = Math.random() * 100 - 15;
+            sparkle.style.left = `${x}%`;
+            sparkle.style.top = `${y}%`;
+            
+            const scale = Math.random() * 0.8 + 0.45;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const delay = Math.random() * 1.2;
+            const duration = Math.random() * 0.7 + 0.55;
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", "M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 20.7858 11.1746 20.1562L9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z");
+            path.setAttribute("fill", color);
+            
+            sparkle.appendChild(path);
+            container.appendChild(sparkle);
+            
+            gsap.set(sparkle, { opacity: 0, scale: 0, rotation: 0 });
+            
+            const tl = gsap.timeline({ repeat: -1, delay: delay });
+            tl.to(sparkle, {
+                opacity: 1,
+                scale: scale,
+                rotation: 90,
+                duration: duration * 0.4,
+                ease: "power2.out"
+            })
+            .to(sparkle, {
+                opacity: 0,
+                scale: 0,
+                rotation: 180,
+                duration: duration * 0.6,
+                ease: "power2.in",
+                onComplete: () => {
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.top = `${Math.random() * 100 - 15}%`;
+                }
+            });
+        }
+    }
+
+    /* ==========================================
        BOOT
        ========================================== */
     function init() {
@@ -984,6 +1148,31 @@
             initMenu();
             initNavScroll();
             initAnchors();
+            initResizeHandler();
+
+            // Check if this is a case study page
+            if (document.body.classList.contains('case-study-page')) {
+                initFooterTransitions();
+                initInteractiveCtaRings();
+                initFooterShader();
+                initMouseSpotlight();
+                initLoader(() => {
+                    initLenis();
+                    revealPage();
+                    initCaseStudyAnimations();
+                    initInteractiveWordBlur();
+                    if (heroTl) heroTl.play();
+                    requestAnimationFrame(() => {
+                        setTimeout(() => { 
+                            ScrollTrigger.refresh(); 
+                            window.dispatchEvent(new Event('resize'));
+                        }, 50);
+                    });
+                });
+                return;
+            }
+
+            // Homepage only initializations
             initNavActive();
             initFilters();
             initTilt();
@@ -995,7 +1184,6 @@
             initFooterTransitions();
             initInteractiveCtaRings();
             initFooterShader();
-            initResizeHandler();
             
             // Defer ScrollTrigger refresh & page reveal after loader ends
             initLoader(() => {
@@ -1005,7 +1193,10 @@
                 
                 // Refresh ScrollTrigger properties once layout is settled
                 requestAnimationFrame(() => {
-                    setTimeout(() => { ScrollTrigger.refresh(); }, 50);
+                    setTimeout(() => { 
+                        ScrollTrigger.refresh(); 
+                        window.dispatchEvent(new Event('resize'));
+                    }, 50);
                 });
             });
         } catch (e) {

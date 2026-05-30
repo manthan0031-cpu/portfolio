@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="loading-active">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#E8DDD4">
+    <meta name="description" content="Dashflow Analytics — A premium case study by Manthan's ART Gallery.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="project-showcase.css">
+
+    <title>Dashflow Analytics — Case Study | Manthan's ART Gallery</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+    <style>
+        html { background-color: #E8DDD4; }
+        body { background-color: transparent; }
+        body.loading-active { overflow: hidden; height: 100vh; width: 100vw; }
+        body.loading-active > *:not(.loader-wrapper):not(.shader-container) { opacity: 0 !important; pointer-events: none !important; }
+        .nav { opacity: 0; transform: translateY(-24px); }
+        .case-study-eyebrow { opacity: 0; transform: translateY(16px); }
+        .case-study-title .word-animate { opacity: 0; transform: translateY(28px) scaleY(0.94); }
+        .case-study-meta-grid > * { opacity: 0; transform: translateY(16px); }
+        .case-study-hero-img-wrap { opacity: 0; transform: scale(0.95); }
+    </style>
+
+    <!-- 3D Book Styles -->
+    <style>
+        /* 3D Book Layout */
+        .book-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .book-container {
+            width: 900px;
+            height: 580px;
+            position: relative;
+            perspective: 2500px;
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .book-page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            will-change: transform;
+            transition: z-index 0.05s linear;
+        }
+
+        .page-side {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            padding: 2.2rem 2.2rem 3rem; /* Spacing padding to avoid overcrowding */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            border-radius: 0 16px 16px 0;
+            overflow: hidden;
+        }
+
+        /* Front Page Side */
+        .page-front {
+            transform: rotateY(0deg);
+            z-index: 2;
+            box-shadow: inset 4px 0 10px rgba(0,0,0,0.4), 3px 6px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Back Page Side */
+        .page-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            border-radius: 16px 0 0 16px;
+            box-shadow: inset -4px 0 10px rgba(0,0,0,0.4), -3px 6px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Dark Book Style (Applies to all inside pages - Pure Black gradients for contrast) */
+        .page-front:not(.cover-front) {
+            background: linear-gradient(to right, #000000 0%, #030303 8%, #0a0a0a 100%);
+            color: #e0e6ed;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .page-back:not(.cover-back) {
+            background: linear-gradient(to left, #000000 0%, #030303 8%, #0a0a0a 100%);
+            color: #e0e6ed;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Covers */
+        .cover-front {
+            background: linear-gradient(135deg, #181a1f 0%, #08090a 100%);
+            color: #ffffff;
+            border: 1px solid rgba(254, 254, 254, 0.18);
+            box-shadow: 15px 15px 40px rgba(0,0,0,0.6);
+            border-radius: 0 18px 18px 0;
+            padding: 3.5rem 3rem;
+        }
+
+        .cover-back {
+            background: linear-gradient(135deg, #08090a 0%, #181a1f 100%);
+            color: #ffffff;
+            border: 1px solid rgba(254, 254, 254, 0.18);
+            box-shadow: -15px 15px 40px rgba(0,0,0,0.6);
+            border-radius: 18px 0 0 18px;
+            padding: 3.5rem 3rem;
+        }
+
+        /* Typography */
+        .page-num-indicator {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #00E5FF;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-heading {
+            font-family: var(--font-display, var(--font-heading)), serif; /* compatibility fallback */
+            font-size: 1.45rem; /* Reduced to avoid crowding */
+            font-weight: 300;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.01em;
+        }
+
+        .cover-front .page-heading {
+            color: #ffffff;
+            font-size: 3.5rem;
+            line-height: 1.05;
+        }
+
+        .page-text {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.78rem; /* Trimmed slightly */
+            line-height: 1.55;
+            color: #9aa5b1;
+            margin-bottom: 0.6rem;
+        }
+
+        .page-text strong {
+            color: #ffffff;
+        }
+
+        .page-text.lead {
+            font-size: 0.92rem;
+            font-family: var(--font-display, var(--font-heading)), serif;
+            font-style: italic;
+            line-height: 1.45;
+            color: #ffffff;
+            border-left: 2px solid #00E5FF;
+            padding-left: 0.8rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .page-visual-box {
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .page-visual-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .page-quote {
+            font-family: var(--font-display, var(--font-heading)), serif;
+            font-size: 1.12rem; /* Trimmed to prevent overlap and crowding */
+            font-style: italic;
+            line-height: 1.42;
+            color: #ffffff;
+            margin: 1rem 0;
+        }
+
+        .page-author {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.72rem;
+            color: #9aa5b1;
+            line-height: 1.5;
+        }
+
+        .metrics-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .metric-item-book {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.5rem;
+        }
+
+        .metric-value-book {
+            font-family: var(--font-display, var(--font-heading)), serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #00E5FF;
+            line-height: 1;
+        }
+
+        .metric-label-book {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9aa5b1;
+            text-align: right;
+            max-width: 200px;
+        }
+
+        /* Cover Designs */
+        .cover-design {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+        .cover-meta {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(244, 234, 225, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .cover-design-back {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+        .cover-back-logo {
+            font-family: var(--font-display, var(--font-heading)), serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: #ffffff;
+        }
+
+        /* Scroll hint */
+        .book-scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #ffffff;
+            opacity: 0.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .book-scroll-hint .hint-arrow {
+            font-size: 0.8rem;
+            animation: hintBounce 2s infinite;
+        }
+        @keyframes hintBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        /* Visual system stack inside book */
+        .visual-system-book {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+        }
+        .visual-item-book {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        .visual-img-book {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .visual-img-book img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .visual-info-book {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .visual-tag-book {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.52rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #00E5FF;
+        }
+        .visual-info-book h4 {
+            font-family: var(--font-display, var(--font-heading)), serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+        .visual-info-book p {
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.68rem;
+            line-height: 1.3;
+            color: #9aa5b1;
+            margin: 0;
+        }
+
+        /* Absolute Page Numbers - Prevents Overcrowding */
+        .page-number-label {
+            position: absolute;
+            bottom: 1.1rem;
+            font-family: var(--font-body), sans-serif;
+            font-size: 0.6rem;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .page-front .page-number-label {
+            right: 2.2rem;
+        }
+        .page-back .page-number-label {
+            left: 2.2rem;
+        }
+
+        /* Responsive Layout for Mobile */
+        @media (max-width: 768px) {
+            .book-wrapper {
+                height: auto;
+                padding: 6rem 4vw 8rem;
+            }
+            .book-container {
+                width: 100%;
+                height: auto;
+                perspective: none;
+            }
+            .book {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                transform: none !important;
+                height: auto;
+            }
+            .book-page {
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
+                top: auto !important;
+                right: auto !important;
+                transform: none !important;
+                transform-style: flat !important;
+            }
+            .page-side {
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 380px;
+                transform: none !important;
+                margin-bottom: 0.5rem;
+                border-radius: 12px !important;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+                padding: 2rem 2rem 3rem !important;
+            }
+            
+            .page-front:not(.cover-front), 
+            .page-back:not(.cover-back) {
+                background: #0d0d0d !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            }
+            
+            .cover-front {
+                background: linear-gradient(135deg, #181a1f 0%, #08090a 100%) !important;
+                border-radius: 12px !important;
+            }
+            .cover-back {
+                background: linear-gradient(135deg, #08090a 0%, #181a1f 100%) !important;
+                border-radius: 12px !important;
+            }
+            .book-scroll-hint {
+                display: none !important;
+            }
+            .page-number-label {
+                bottom: 1rem !important;
+            }
+            .page-front .page-number-label {
+                right: 1.5rem !important;
+            }
+            .page-back .page-number-label {
+                left: 1.5rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="loading-active case-study-page theme-dark-book">
+
+<div id="loaderWrapper" class="loader-wrapper">
+    <div class="loader-content">
+        <div class="loader-title">Manthan's <em>Art Gallery</em></div>
+        <div class="loader-progress-container">
+            <div id="loaderBar" class="loader-bar"></div>
+        </div>
+        <div id="loaderPercent" class="loader-percent">00</div>
+    </div>
+</div>
+
+<div class="grain-overlay" aria-hidden="true"></div>
+<div id="shader-background" class="shader-container" aria-hidden="true"></div>
+<div id="mouse-gradient" class="mouse-gradient-glow" aria-hidden="true"></div>
+
+<nav class="nav" id="nav" role="navigation">
+    <div class="nav-inner">
+        <a href="../index.html" class="nav-logo" data-magnetic aria-label="Home">
+            Manthan's<br><span>ART Gallery</span>
+        </a>
+        <div class="nav-tabs">
+            <a href="../index.html#projects" class="nav-tab active" data-magnetic>Work</a>
+            <div class="nav-divider"></div>
+            <a href="../index.html#about" class="nav-tab" data-magnetic>About</a>
+            <div class="nav-divider"></div>
+            <a href="../index.html#contact" class="nav-tab" data-magnetic>Contact</a>
+        </div>
+        <button class="nav-menu-btn" id="menuBtn" data-magnetic aria-label="Toggle menu" aria-expanded="false" aria-controls="menuOverlay">
+            <div class="hamburger" id="hamburger"><span></span><span></span></div>
+            <span class="menu-label" id="menuLabel">Menu</span>
+        </button>
+    </div>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <a href="../index.html#projects" class="menu-item" style="transition-delay:.05s">Work</a>
+    <a href="../index.html#about" class="menu-item" style="transition-delay:.1s">About</a>
+    <a href="../index.html#process" class="menu-item" style="transition-delay:.15s">Process</a>
+    <a href="../index.html#contact" class="menu-item" style="transition-delay:.2s">Contact</a>
+</div>
+
+<section class="case-study-hero" id="caseStudyHero" aria-label="Case Study Introduction">
+    <div class="case-study-hero-inner">
+        <div class="case-study-hero-content">
+            <div class="case-study-eyebrow">
+                <span class="eyebrow-label">Featured Case Study</span>
+                
+            </div>
+            <h1 class="case-study-title" id="caseStudyTitle">
+                <span class="line"><span class="line-inner"><span class="word-animate" style="animation-delay: 0.15s;">Dashflow</span></span></span>
+                <span class="line"><span class="line-inner"><span class="word-animate accent" style="animation-delay: 0.3s;">Analytics</span></span></span>
+            </h1>
+            <div class="case-study-meta-grid">
+                <div class="meta-item"><span class="meta-label">Client</span><span class="meta-value">Dashflow Inc.</span></div>
+                <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">Design & Development</span></div>
+                
+                <div class="meta-item"><span class="meta-label">Deliverables</span><span class="meta-value">Dashboard, Design System</span></div>
+            </div>
+        </div>
+        <div class="case-study-hero-img-wrap">
+            <div class="case-study-hero-img-inner">
+                <img class="case-study-hero-img" src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1400&h=900&fit=crop&q=80" alt="Dashflow Analytics hero preview" loading="eager" decoding="async">
+                <div class="case-study-hero-img-overlay"></div>
+            </div>
+            <div class="case-study-hero-img-caption"><span>01</span><span class="caption-separator">—</span><span>Dashboard Experience</span></div>
+        </div>
+    </div>
+    <div class="scroll-indicator" id="scrollIndicator" aria-hidden="true"><span>Explore</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ==========================================
+     3D BOOK LAYOUT SECTION
+     ========================================== -->
+<main class="book-wrapper">
+    <!-- Minimal small scroll hint at the beginning -->
+    <div class="book-scroll-hint" id="bookScrollHint">
+        <span>Scroll to Flip</span>
+        <div class="hint-arrow">↓</div>
+    </div>
+
+    <div class="book-container">
+        <div class="book" id="caseStudyBook">
+
+            <!-- Page 0: Cover (Front Cover & Inside Overview) -->
+            <div class="book-page page-0">
+                <div class="page-side page-front cover-front">
+                    <div class="cover-design">
+                        <span class="page-num-indicator" style="color: #ffffff; opacity: 0.6;">Case Study 04</span>
+                        <div class="cover-titles-wrap">
+                            <h2 class="page-heading" style="color:#ffffff; margin-bottom: 0.5rem;">Dashflow</h2><h2 class="page-heading accent" style="margin-bottom: 0;">Analytics</h2>
+                        </div>
+                        <div class="cover-meta">
+                            <span>Role: Design & Development</span>
+                            <span>Deliverables: Dashboard, Design System</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-side page-back">
+                    <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                        <div>
+                            <span class="page-num-indicator">01 / Overview</span>
+                            <h3 class="page-heading">The Challenge</h3>
+                            <p class="page-text lead">Dashflow needed a real-time analytics dashboard that could process millions of data points while maintaining a interface so intuitive that non-technical stakeholders could derive insights at a glance.</p>
+                            <p class="page-text">The existing tool was powerful but opaque — a wall of charts that overwhelmed rather than illuminated. We were tasked with transforming raw data into actionable intelligence through design.</p>
+                        </div>
+                    </div>
+                    <span class="page-number-label">Page 01</span>
+                </div>
+            </div>
+
+            <!-- Page 1: Visual Architecture & Feature 1 -->
+            <div class="book-page page-1">
+                <div class="page-side page-front">
+                    <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                        <div>
+                            <span class="page-num-indicator">02 / System</span>
+                            <h3 class="page-heading">Design Language</h3>
+                            <div class="visual-system-book">
+            <div class="visual-item-book">
+                <div class="visual-img-book">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&q=80" alt="Dark Mode Architecture">
+                </div>
+                <div class="visual-info-book">
+                    <span class="visual-tag-book">UI System</span>
+                    <h4>Dark Mode Architecture</h4>
+                    <p>A meticulously crafted dark interface system with 12 semantic color tokens.</p>
+                </div>
+            </div>
+            <div class="visual-item-book">
+                <div class="visual-img-book">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=800&fit=crop&q=80" alt="Live Chart Engine">
+                </div>
+                <div class="visual-info-book">
+                    <span class="visual-tag-book">Data</span>
+                    <h4>Live Chart Engine</h4>
+                    <p>Real-time D3.js visualizations with 60fps animation and smooth transitions.</p>
+                </div>
+            </div>
+            <div class="visual-item-book">
+                <div class="visual-img-book">
+                    <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=500&fit=crop&q=80" alt="Atomic Design System">
+                </div>
+                <div class="visual-info-book">
+                    <span class="visual-tag-book">Components</span>
+                    <h4>Atomic Design System</h4>
+                    <p>120+ reusable components built with React, Tailwind, and Framer Motion.</p>
+                </div>
+            </div></div>
+                        </div>
+                    </div>
+                    <span class="page-number-label">Page 02</span>
+                </div>
+                <div class="page-side page-back">
+                    
+            <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                <div>
+                    <span class="page-num-indicator">01 / Real-Time Data Pipeline</span>
+                    <h3 class="page-heading">Real-Time Data Pipeline</h3>
+                    <div class="page-visual-box">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&h=500&fit=crop&q=80" alt="Real-Time Data Pipeline">
+                    </div>
+                    <p class="page-text" style="margin-bottom: 0.3rem;">A WebSocket-powered data layer that streams live metrics with sub-second latency. Custom D3.js visualizations render 10,000+ data points at 60fps using canvas-based rendering and intelligent decimation.</p>
+                    <ul style="font-family: var(--font-body), sans-serif; font-size: 0.65rem; line-height: 1.3; color: #b3b3b3; margin: 0.4rem 0 0 1.2rem; display: flex; flex-direction: column; gap: 2px; padding: 0;"><li style="margin-bottom: 1px;">WebSocket bidirectional streaming</li><li style="margin-bottom: 1px;">Canvas-based chart rendering</li><li style="margin-bottom: 1px;">Intelligent data decimation</li></ul>
+                </div>
+            </div>
+                    <span class="page-number-label">Page 03</span>
+                </div>
+            </div>
+
+            <!-- Page 2: Feature 2 & Feature 3 -->
+            <div class="book-page page-2">
+                <div class="page-side page-front">
+                    
+            <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                <div>
+                    <span class="page-num-indicator">02 / Adaptive Theme Engine</span>
+                    <h3 class="page-heading">Adaptive Theme Engine</h3>
+                    <div class="page-visual-box">
+                        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=700&h=500&fit=crop&q=80" alt="Adaptive Theme Engine">
+                    </div>
+                    <p class="page-text" style="margin-bottom: 0.3rem;">A CSS custom properties-based theming system that transitions between light and dark modes with zero flash. Per-component theme overrides allow granular control over the visual hierarchy.</p>
+                    <ul style="font-family: var(--font-body), sans-serif; font-size: 0.65rem; line-height: 1.3; color: #b3b3b3; margin: 0.4rem 0 0 1.2rem; display: flex; flex-direction: column; gap: 2px; padding: 0;"><li style="margin-bottom: 1px;">CSS custom properties architecture</li><li style="margin-bottom: 1px;">Zero-flash theme transitions</li><li style="margin-bottom: 1px;">Per-component theme overrides</li></ul>
+                </div>
+            </div>
+                    <span class="page-number-label">Page 04</span>
+                </div>
+                <div class="page-side page-back">
+                    
+            <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                <div>
+                    <span class="page-num-indicator">03 / Role-Based Access Control</span>
+                    <h3 class="page-heading">Role-Based Access Control</h3>
+                    <div class="page-visual-box">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f4?w=700&h=500&fit=crop&q=80" alt="Role-Based Access Control">
+                    </div>
+                    <p class="page-text" style="margin-bottom: 0.3rem;">A granular permission system with dynamic UI adaptation. Components render conditionally based on user roles, ensuring each stakeholder sees precisely what they need — nothing more, nothing less.</p>
+                    <ul style="font-family: var(--font-body), sans-serif; font-size: 0.65rem; line-height: 1.3; color: #b3b3b3; margin: 0.4rem 0 0 1.2rem; display: flex; flex-direction: column; gap: 2px; padding: 0;"><li style="margin-bottom: 1px;">Granular permission matrix</li><li style="margin-bottom: 1px;">Dynamic component rendering</li><li style="margin-bottom: 1px;">Route-level access guards</li></ul>
+                </div>
+            </div>
+                    <span class="page-number-label">Page 05</span>
+                </div>
+            </div>
+
+            <!-- Page 3: Results & Testimonial inside sheet -->
+            <div class="book-page page-3">
+                <div class="page-side page-front">
+                    <div class="page-content" style="height:100%; display:flex; flex-direction:column; justify-content:flex-start;">
+                        <div>
+                            <span class="page-num-indicator">04 / Performance</span>
+                            <h3 class="page-heading">Measured Impact</h3>
+                            <div class="metrics-grid">
+            <div class="metric-item-book">
+                <span class="metric-value-book">280%</span>
+                <span class="metric-label-book">Faster Data Rendering vs. Previous Tool</span>
+            </div>
+            <div class="metric-item-book">
+                <span class="metric-value-book">99/100</span>
+                <span class="metric-label-book">Lighthouse Performance Score</span>
+            </div>
+            <div class="metric-item-book">
+                <span class="metric-value-book">45%</span>
+                <span class="metric-label-book">Reduction in Support Tickets</span>
+            </div></div>
+                        </div>
+                    </div>
+                    <span class="page-number-label">Page 06</span>
+                </div>
+                <div class="page-side page-back">
+                    <div class="cover-design-back" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center;">
+                        <span class="page-num-indicator" style="color: #00E5FF; opacity: 0.85; margin-bottom: 0.5rem;">05 / Testimonial</span>
+                        <blockquote class="page-quote" style="color: #ffffff; font-size: 1.12rem; margin: 1rem 0; line-height: 1.45; font-family: var(--font-display, var(--font-heading)), serif; font-style: italic;">
+                            "Manthan transformed our data from a burden into a weapon. The dashboard doesn't just display metrics — it tells stories. Our team now makes decisions in minutes that used to take days."
+                        </blockquote>
+                        <div class="page-author" style="color: #9aa5b1; display: flex; align-items: center; gap: 0.8rem; width: 100%; justify-content: center;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&q=80" alt="David Park" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div style="text-align: left;">
+                                <strong style="color: #ffffff; font-size: 0.76rem; font-family: var(--font-body), sans-serif; font-weight:600;">David Park</strong><br>
+                                <span style="font-size: 0.65rem; color: #9aa5b1; font-family: var(--font-body), sans-serif;">CTO, Dashflow Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="page-number-label">Page 07</span>
+                </div>
+            </div>
+
+            <!-- Page 4: Blank Inside End & Outside Back Cover (Ends on blank end back cover) -->
+            <div class="book-page page-4">
+                <div class="page-side page-front">
+                    <div class="cover-design-back" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <span style="font-size: 1.8rem; color: #00E5FF; opacity: 0.45; font-family: var(--font-display, var(--font-heading)), serif;">✦</span>
+                    </div>
+                    <span class="page-number-label">Page 08</span>
+                </div>
+                <div class="page-side page-back cover-back">
+                    <div class="cover-design-back" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <!-- Blank outside back cover -->
+                        <span class="cover-back-logo" style="opacity: 0.15; font-size: 1.2rem;">✦</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<section class="next-project-section" id="nextProject" aria-label="Next Project">
+    <div class="next-project-bg" aria-hidden="true"></div>
+    <div class="next-project-inner">
+        <span class="next-project-label">Next Case Study</span>
+        <a href="terra-verde.html" class="next-project-link" data-magnetic>
+            <span class="next-project-title">Terra Verde <em>Shop</em></span>
+            <span class="next-project-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
+        <span class="next-project-category">E-Commerce / Shopify</span>
+    </div>
+</section>
+
+<section class="cta-section" id="contact" aria-label="Contact">
+    <div id="footer-shader" class="footer-shader-container" aria-hidden="true"></div>
+    <div class="cta-bg-ring-wrap" style="width: 600px; height: 600px;" aria-hidden="true"><div class="cta-bg-ring"></div></div>
+    <div class="cta-bg-ring-wrap" style="width: 900px; height: 900px;" aria-hidden="true"><div class="cta-bg-ring" style="animation-delay: -2s;"></div></div>
+    <div class="cta-bg-ring-wrap" style="width: 1200px; height: 1200px;" aria-hidden="true"><div class="cta-bg-ring" style="animation-delay: -4s;"></div></div>
+    <div class="cta-inner">
+        <div class="cta-eyebrow">Let's Build Something</div>
+        <h2 class="cta-headline">Have a project<br>in <em>mind?</em></h2>
+        <p class="cta-subtext">I'm selectively taking on new projects. If you're building something worth making, I'd love to hear about it.</p>
+        <div class="cta-buttons">
+            <a href="mailto:manthan0031@gmail.com" class="btn-primary" data-magnetic>Send a Message</a>
+            <a href="../index.html#projects" class="btn-secondary" data-magnetic>View All Work</a>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../scripts.js"></script>
+<script src="project-showcase.js"></script>
+
+
+<!-- 3D Book WebGL Shader Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // --- 1. WebGL Translucent Warp Shader Background ---
+    const initThreeShader = () => {
+        const container = document.getElementById("shader-background");
+        if (!container || !window.THREE) return;
+
+        const THREE = window.THREE;
+        container.innerHTML = "";
+
+        const camera = new THREE.Camera();
+        camera.position.z = 1;
+
+        const scene = new THREE.Scene();
+        const geometry = new THREE.PlaneGeometry(2, 2);
+
+        const uniforms = {
+            time: { type: "f", value: 1.0 },
+            resolution: { type: "v2", value: new THREE.Vector2() },
+            mouse: { type: "v2", value: new THREE.Vector2() }
+        };
+
+        const vertexShader = `
+            void main() {
+                gl_Position = vec4( position, 1.0 );
+            }
+        `;
+
+        const fragmentShader = `
+            #define TWO_PI 6.2831853072
+            #define PI 3.14159265359
+
+            precision highp float;
+            uniform vec2 resolution;
+            uniform float time;
+            uniform vec2 mouse;
+            
+            float random (in float x) {
+                return fract(sin(x)*1e4);
+            }
+            float random (vec2 st) {
+                return fract(sin(dot(st.xy,
+                                     vec2(12.9898,78.233)))*
+                           43758.5453123);
+            }
+
+            // 2D Value Noise
+            float noise(in vec2 p) {
+                vec2 i = floor(p);
+                vec2 f = fract(p);
+                vec2 u = f*f*(3.0-2.0*f);
+                return mix( mix( random(i + vec2(0.0,0.0)), 
+                                 random(i + vec2(1.0,0.0)), u.x),
+                            mix( random(i + vec2(0.0,1.0)), 
+                                 random(i + vec2(1.0,1.0)), u.x), u.y);
+            }
+
+            // Swirl coordinates around a center point
+            vec2 swirl(vec2 uv, vec2 center, float strength, float radius) {
+                vec2 d = uv - center;
+                float dist = length(d);
+                float percent = max(0.0, radius - dist) / radius;
+                float theta = percent * percent * strength;
+                float s = sin(theta);
+                float c = cos(theta);
+                uv = vec2(d.x * c - d.y * s, d.x * s + d.y * c) + center;
+                return uv;
+            }
+
+            void main(void) {
+                vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                vec2 m = (mouse.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                
+                vec2 warpedUv = swirl(uv, vec2(0.0), 0.8, 1.5);
+                warpedUv = swirl(warpedUv, m, 0.12, 0.60);
+                
+                float t = time * 0.17;
+                for (int i = 0; i < 6; i++) {
+                    float angle = float(i) * (TWO_PI / 6.0) + t;
+                    vec2 offset = vec2(cos(angle), sin(angle)) * 0.3;
+                    warpedUv = swirl(warpedUv, offset, 0.45, 1.0);
+                }
+                
+                vec2 q = vec2(0.0);
+                q.x = noise(warpedUv * 3.0 + vec2(t * 0.4, t * 0.2));
+                q.y = noise(warpedUv * 3.0 + vec2(t * -0.2, t * 0.5));
+                
+                vec2 r = vec2(0.0);
+                r.x = noise(warpedUv * 3.0 + 4.0 * q + vec2(1.3, 4.5) + t * 0.1);
+                r.y = noise(warpedUv * 3.0 + 4.0 * q + vec2(7.2, 2.3) + t * 0.15);
+                
+                vec2 checkUv = (warpedUv + r * 0.25) * 6.0;
+                float checkVal = sin(checkUv.x) * sin(checkUv.y);
+                float checks = smoothstep(-0.6, 0.6, checkVal);
+                
+                vec3 c0 = vec3(0.04, 0.04, 0.05);
+                vec3 c1 = vec3(0.06, 0.07, 0.10);
+                vec3 c2 = vec3(0.02, 0.03, 0.05);
+                vec3 c3 = vec3(0.0, 0.90, 1.0);
+
+                float mixVal = noise(warpedUv * 1.5 + r * 0.4 + t * 0.05);
+                vec3 colA = mix(c0, c1, mixVal);
+                vec3 colB = mix(c2, c3, mixVal);
+                vec3 finalColor = mix(colA, colB, checks);
+                
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: true,
+            depthWrite: false,
+            depthTest: false
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        container.appendChild(renderer.domElement);
+
+        let targetMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        let currentMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+        window.addEventListener("mousemove", (e) => {
+            targetMouse.x = e.clientX;
+            targetMouse.y = window.innerHeight - e.clientY;
+        }, { passive: true });
+
+        const onWindowResize = () => {
+            const rect = container.getBoundingClientRect();
+            renderer.setSize(rect.width, rect.height);
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+            targetMouse.x = rect.width / 2;
+            targetMouse.y = rect.height / 2;
+        };
+
+        onWindowResize();
+        window.addEventListener("resize", onWindowResize, false);
+
+        let timeScale = 1.0;
+        let targetTimeScale = 1.0;
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            if (document.hidden) return;
+
+            currentMouse.x += (targetMouse.x - currentMouse.x) * 0.07;
+            currentMouse.y += (targetMouse.y - currentMouse.y) * 0.07;
+            uniforms.mouse.value.x = currentMouse.x;
+            uniforms.mouse.value.y = currentMouse.y;
+            
+            timeScale += (targetTimeScale - timeScale) * 0.05;
+            uniforms.time.value += 0.012 * timeScale;
+            
+            renderer.render(scene, camera);
+            window.shaderBackgroundReady = true;
+        };
+
+        animate();
+    };
+
+    // --- 2. Interactive Click Ripple effect ---
+    const initClickRipples = () => {
+        document.addEventListener("click", (e) => {
+            if (e.target.closest("a, button")) return;
+
+            const ripple = document.createElement("div");
+            ripple.className = "ripple-effect";
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top = `${e.clientY}px`;
+            document.body.appendChild(ripple);
+
+            gsap.fromTo(ripple,
+                { width: 4, height: 4, opacity: 0.85, scale: 1 },
+                {
+                    width: 80,
+                    height: 80,
+                    opacity: 0,
+                    scale: 2.2,
+                    duration: 1.0,
+                    ease: "power2.out",
+                    onComplete: () => ripple.remove()
+                }
+            );
+        });
+    };
+
+    initThreeShader();
+    initClickRipples();
+});
+</script>
+<!-- End 3D Book WebGL Shader Script -->
+<!-- 3D Book Scroll Trigger Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // --- 3. 3D Scroll-Flipping Book animation ---
+    const setupBookScrolling = () => {
+        if (window.innerWidth <= 768) {
+            // Stack layout on mobile automatically
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 50);
+            return;
+        }
+
+        const book = document.getElementById("caseStudyBook");
+        if (!book) return;
+
+        // Reset all pages to initial state
+        gsap.set(".book-page", { rotateY: 0 });
+
+        // Set initial z-indexes for 3D stacking order
+        gsap.set(".book-page.page-0", { zIndex: 10 });
+        gsap.set(".book-page.page-1", { zIndex: 9 });
+        gsap.set(".book-page.page-2", { zIndex: 8 });
+        gsap.set(".book-page.page-3", { zIndex: 7 });
+        gsap.set(".book-page.page-4", { zIndex: 6 });
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".book-wrapper",
+                start: "top top",
+                end: "+=3500", // Scroll length to complete all flips
+                scrub: 1,
+                pin: true,
+                anticipatePin: 1
+            }
+        });
+
+        // Closed book starts shifted to the right (-25%) so the cover on the right side of the spine is centered
+        gsap.set(book, { xPercent: -25 });
+
+        // Step 1: Open the book (page 0 flips left 180deg) and center the book spine
+        tl.to(book, { xPercent: 0, ease: "power1.inOut", duration: 1 }, 0)
+          .to(".book-page.page-0", { rotateY: -180, ease: "power1.inOut", duration: 1 }, 0)
+          .set(".book-page.page-0", { zIndex: 6 }, 0.5) // half-way through the flip, send to back
+          .to("#bookScrollHint", { opacity: 0, y: 15, duration: 0.2 }, 0) // fade out scroll hint immediately
+
+          // Step 2: Page 1 flips
+          .to(".book-page.page-1", { rotateY: -180, ease: "power1.inOut", duration: 1 }, 1.2)
+          .set(".book-page.page-1", { zIndex: 7 }, 1.7)
+
+          // Step 3: Page 2 flips
+          .to(".book-page.page-2", { rotateY: -180, ease: "power1.inOut", duration: 1 }, 2.4)
+          .set(".book-page.page-2", { zIndex: 8 }, 2.9)
+
+          // Step 4: Page 3 flips
+          .to(".book-page.page-3", { rotateY: -180, ease: "power1.inOut", duration: 1 }, 3.6)
+          .set(".book-page.page-3", { zIndex: 9 }, 4.1)
+
+          // Step 5: Close the book (page 4 flips) and shift to the left (+25%) so back cover is centered
+          .to(book, { xPercent: 25, ease: "power1.inOut", duration: 1 }, 4.8)
+          .to(".book-page.page-4", { rotateY: -180, ease: "power1.inOut", duration: 1 }, 4.8)
+          .set(".book-page.page-4", { zIndex: 10 }, 5.3);
+          
+        // Recalculate ScrollTrigger to adjust trigger offsets of subsequent elements (like footer transitions)
+        setTimeout(() => {
+            ScrollTrigger.refresh();
+        }, 100);
+    };
+
+    // Run setup after page resources have loaded to ensure heights and ScrollTrigger are correctly computed
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setupBookScrolling();
+    } else {
+        window.addEventListener("load", setupBookScrolling);
+    }
+});
+</script>
+<!-- End 3D Book Scroll Trigger Script -->
+</body>
+</html>
