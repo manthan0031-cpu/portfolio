@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="loading-active">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#E8DDD4">
+    <meta name="description" content="Manthan's ART Gallery. Premium web design & development showcase.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+
+    <!-- Primary Fonts (Cormorant Garamond & Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Core animation libs (sync: scripts.js depends on them at DOMContentLoaded) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Lenis & Three.js deferred — NOT needed before first paint -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js" defer></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile.css">
+
+    <meta property="og:title" content="Manthan's ART Gallery">
+    <meta property="og:description" content="Premium web design & development portfolio.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618219944342-824e40a13285?w=1200&q=80">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Manthan's ART Gallery">
+    <meta name="twitter:description" content="Premium web design & development portfolio.">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Manthan",
+        "jobTitle": "Art Director & Developer",
+        "url": "https://yourdomain.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "New Delhi", "addressCountry": "IN" }
+    }
+    </script>
+
+    <title>Manthan's ART Gallery — Web Projects (Preview Mode)</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
+    <style>
+        /* === FOUC & SCROLL LOCK === */
+        html {
+            background-color: #E8DDD4;
+        }
+        body {
+            background-color: transparent;
+        }
+        body.loading-active {
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        body.loading-active > *:not(.loader-wrapper):not(.shader-container) {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* === PREMIUM LOADER === */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(232, 221, 212, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+        }
+        body.loading-active #shader-background {
+            z-index: 9990 !important;
+            opacity: 0.58 !important;
+        }
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        .loader-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.18em;
+            color: #1a1a1a;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: loaderFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.2s;
+            text-transform: uppercase;
+        }
+        .loader-title em {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-weight: 400;
+        }
+        .loader-progress-container {
+            width: 160px;
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: loaderFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.4s;
+        }
+        .loader-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: #FF6B35;
+            will-change: width;
+        }
+        .loader-percent {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            color: #1a1a1a;
+            opacity: 0;
+            transform: translateY(-5px);
+            animation: loaderFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
+        }
+
+        @keyframes loaderFadeIn {
+            to {
+                opacity: 0.85;
+                transform: translateY(0);
+            }
+        }
+
+        /* === PRE-HIDE HERO ELEMENTS === */
+        .nav { opacity: 0; transform: translateY(-24px); }
+        #heroEyebrow span { opacity: 0; transform: translateY(24px); }
+        .word-animate { opacity: 0; transform: translateY(28px) scaleY(0.94); }
+        #heroSubline span { opacity: 0; transform: translateY(20px); }
+        #heroCta { opacity: 0; transform: translateY(20px); }
+        #scrollIndicator { opacity: 0; transform: translateY(16px); }
+        .hero-side-label { opacity: 0; }
+        .float-preview.left  { opacity: 0; }
+        .float-preview.right { opacity: 0; }
+    </style>
+</head>
+<body class="loading-active">
+
+<!-- Premium Loading Screen -->
+<div id="loaderWrapper" class="loader-wrapper">
+    <div class="loader-content">
+        <div class="loader-title">Manthan's <em>Art Gallery</em></div>
+        <div class="loader-progress-container">
+            <div id="loaderBar" class="loader-bar"></div>
+        </div>
+        <div id="loaderPercent" class="loader-percent">00</div>
+    </div>
+</div>
+
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<!-- Full Page Fixed WebGL Translucent Warp Shader Background -->
+<div id="shader-background" class="shader-container" aria-hidden="true"></div>
+
+<!-- Interactive mouse spotlight trail -->
+<div id="mouse-gradient" class="mouse-gradient-glow" aria-hidden="true"></div>
+
+<nav class="nav" id="nav" role="navigation">
+    <div class="nav-inner">
+        <a href="#hero" class="nav-logo" data-magnetic aria-label="Home">
+            Manthan's<br><span>ART Gallery</span>
+        </a>
+        <div class="nav-tabs">
+            <a href="#projects" class="nav-tab active" data-magnetic>Work</a>
+            <div class="nav-divider"></div>
+            <a href="#about" class="nav-tab" data-magnetic>About</a>
+            <div class="nav-divider"></div>
+            <a href="#contact" class="nav-tab" data-magnetic>Contact</a>
+        </div>
+        <button class="nav-menu-btn" id="menuBtn" data-magnetic aria-label="Toggle menu" aria-expanded="false" aria-controls="menuOverlay">
+            <div class="hamburger" id="hamburger"><span></span><span></span></div>
+            <span class="menu-label" id="menuLabel">Menu</span>
+        </button>
+    </div>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <a href="#projects" class="menu-item" style="transition-delay:.05s">Work</a>
+    <a href="#about" class="menu-item" style="transition-delay:.1s">About</a>
+    <a href="#process" class="menu-item" style="transition-delay:.15s">Process</a>
+    <a href="#contact" class="menu-item" style="transition-delay:.2s">Contact</a>
+</div>
+
+<section class="hero" id="hero" aria-label="Introduction">
+    <!-- Floating background dust particles -->
+    <div class="particles-container" aria-hidden="true">
+        <div class="particle" style="top: 25%; left: 15%; --delay: 0.5s; --duration: 5s;"></div>
+        <div class="particle" style="top: 60%; left: 85%; --delay: 1.2s; --duration: 7s;"></div>
+        <div class="particle" style="top: 40%; left: 8%; --delay: 1.8s; --duration: 6s;"></div>
+        <div class="particle" style="top: 75%; left: 92%; --delay: 2.5s; --duration: 8s;"></div>
+        <div class="particle" style="top: 15%; left: 75%; --delay: 0.2s; --duration: 9s;"></div>
+    </div>
+
+    <div class="hero-blob one" aria-hidden="true"></div>
+    <div class="hero-blob two" aria-hidden="true"></div>
+
+    <!-- Browser Mockups with names removed -->
+    <div class="float-preview left" aria-hidden="true">
+        <div class="browser-bar">
+            <div class="browser-dot bd-r"></div>
+            <div class="browser-dot bd-y"></div>
+            <div class="browser-dot bd-g"></div>
+            <div class="url-bar"><span class="url-text"></span></div>
+        </div>
+        <img class="preview-content" src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=400&h=300&fit=crop&q=80" alt="" loading="eager" decoding="async">
+    </div>
+    <div class="float-preview right" aria-hidden="true">
+        <div class="browser-bar">
+            <div class="browser-dot bd-r"></div>
+            <div class="browser-dot bd-y"></div>
+            <div class="browser-dot bd-g"></div>
+            <div class="url-bar"><span class="url-text"></span></div>
+        </div>
+        <img class="preview-content" src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop&q=80" alt="" loading="eager" decoding="async">
+    </div>
+
+    <div class="hero-side-label left" aria-hidden="true">
+        Web Designer &amp;<br>Developer
+    </div>
+    <div class="hero-side-label right" aria-hidden="true">
+        Accepting Limited<br>Commissions
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-eyebrow" id="heroEyebrow">
+            <span>Web Designer &amp; Developer</span>
+        </div>
+        
+        <h1 class="hero-headline" id="heroHeadline">
+            <span class="line">
+                <span class="line-inner">
+                    <!-- Staggered word-by-word reveal transitions -->
+                    <span class="word-animate" style="animation-delay: 0.15s;">Crafting</span>
+                    <span class="word-animate" style="animation-delay: 0.3s;">Digital</span>
+                </span>
+            </span>
+            <span class="line">
+                <span class="line-inner">
+                    <!-- Accent text wraps the floating sparkles -->
+                    <span class="accent underline-highlight word-animate" style="animation-delay: 0.45s;">
+                        <!-- Isolated text block to prevent layout conflicts with absolute SVGs -->
+                        <span class="underline-text">Experiences</span>
+                        
+                        <!-- Dedicated container for sparkles -->
+                        <span class="sparkles-container" style="position: absolute; inset: 0; pointer-events: none; z-index: 20;" aria-hidden="true"></span>
+                    </span>
+                </span>
+            </span>
+        </h1>
+        
+        <p class="hero-subline" id="heroSubline">
+            <span>Purposeful design. Precise execution.</span>
+        </p>
+        <a href="#projects" class="cta-btn" id="heroCta" data-magnetic>
+            <span>View My Work</span>
+            <span class="btn-dot"></span>
+        </a>
+    </div>
+
+    <div class="scroll-indicator" id="scrollIndicator" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ==========================================
+     01.5 / AREA OF EXPERTISE (Service Cards)
+     ========================================== -->
+<section class="expertise-section" id="expertise" aria-labelledby="expertiseTitle">
+    <div class="expertise-header">
+        <div class="section-label">01.5 / Expertise</div>
+        <h2 class="expertise-title" id="expertiseTitle">
+            Areas of<br><span class="accent">Expertise</span>
+        </h2>
+    </div>
+    
+    <div class="cards-stack-container">
+        <div class="cards-stack" id="expertiseCardsStack">
+            
+            <!-- Card 1: Strategy -->
+            <div class="expertise-card" data-card-index="0">
+                <div class="expertise-card-inner">
+                    <!-- Front Side -->
+                    <div class="expertise-card-front">
+                                                <svg class="card-filigree-bg-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                        </svg>
+                        <div class="expertise-card-content">
+<div class="expertise-card-header">
+                            <span class="expertise-card-num">01</span>
+                            <h3 class="expertise-card-title">Strategy</h3>
+                        </div>
+                        <ul class="expertise-card-list">
+                            <li>Digital Experience Strategy</li>
+                            <li>Technology Strategy</li>
+                            <li>Creative Direction</li>
+                            <li>Discovery &amp; Research</li>
+                        </ul>
+                        <div class="expertise-card-bottom">STRATEGY</div>
+                                            </div>
+</div>
+                    <!-- Back Side -->
+                    <div class="expertise-card-back">
+                        <svg class="card-filigree-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+
+                            <g class="center-medallion">
+                                <circle cx="200" cy="280" r="75" class="medallion-ring-outer" />
+                                <circle cx="200" cy="280" r="68" class="medallion-ring-inner" />
+                                <circle cx="200" cy="280" r="45" class="medallion-ring-core" />
+                                
+                                <path d="M 200,195 Q 200,280 285,280 Q 200,280 200,365 Q 200,280 115,280 Q 200,280 200,195 Z" class="medallion-star" />
+                                
+                                <polygon points="200,255 225,280 200,305 175,280" class="center-diamond" />
+                                <circle cx="200" cy="280" r="6" class="filigree-dot-center" />
+                                
+                                <circle cx="200" cy="220" r="2.5" class="filigree-dot" />
+                                <circle cx="200" cy="340" r="2.5" class="filigree-dot" />
+                                <circle cx="140" cy="280" r="2.5" class="filigree-dot" />
+                                <circle cx="260" cy="280" r="2.5" class="filigree-dot" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Creative -->
+            <div class="expertise-card" data-card-index="1">
+                <div class="expertise-card-inner">
+                    <!-- Front Side -->
+                    <div class="expertise-card-front">
+                                                <svg class="card-filigree-bg-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                        </svg>
+                        <div class="expertise-card-content">
+<div class="expertise-card-header">
+                            <span class="expertise-card-num">02</span>
+                            <h3 class="expertise-card-title">Creative</h3>
+                        </div>
+                        <ul class="expertise-card-list">
+                            <li>Art Direction</li>
+                            <li>UI/UX Design</li>
+                            <li>Motion Design</li>
+                            <li>Interactive Design</li>
+                            <li>Illustration &amp; 3D</li>
+                        </ul>
+                        <div class="expertise-card-bottom">CREATIVE</div>
+                                            </div>
+</div>
+                    <!-- Back Side -->
+                    <div class="expertise-card-back">
+                        <svg class="card-filigree-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+
+                            <g class="center-medallion">
+                                <circle cx="200" cy="280" r="75" class="medallion-ring-outer" />
+                                <circle cx="200" cy="280" r="68" class="medallion-ring-inner" />
+                                <circle cx="200" cy="280" r="45" class="medallion-ring-core" />
+                                
+                                <path d="M 200,195 Q 200,280 285,280 Q 200,280 200,365 Q 200,280 115,280 Q 200,280 200,195 Z" class="medallion-star" />
+                                
+                                <polygon points="200,255 225,280 200,305 175,280" class="center-diamond" />
+                                <circle cx="200" cy="280" r="6" class="filigree-dot-center" />
+                                
+                                <circle cx="200" cy="220" r="2.5" class="filigree-dot" />
+                                <circle cx="200" cy="340" r="2.5" class="filigree-dot" />
+                                <circle cx="140" cy="280" r="2.5" class="filigree-dot" />
+                                <circle cx="260" cy="280" r="2.5" class="filigree-dot" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Tech -->
+            <div class="expertise-card" data-card-index="2">
+                <div class="expertise-card-inner">
+                    <!-- Front Side -->
+                    <div class="expertise-card-front">
+                                                <svg class="card-filigree-bg-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                        </svg>
+                        <div class="expertise-card-content">
+<div class="expertise-card-header">
+                            <span class="expertise-card-num">03</span>
+                            <h3 class="expertise-card-title">Tech</h3>
+                        </div>
+                        <ul class="expertise-card-list">
+                            <li>WebGL / Creative Coding</li>
+                            <li>Front End Development</li>
+                            <li>Unity / Unreal Engine</li>
+                            <li>Interactive Installations</li>
+                            <li>AR / VR Experiences</li>
+                        </ul>
+                        <div class="expertise-card-bottom">TECH</div>
+                                            </div>
+</div>
+                    <!-- Back Side -->
+                    <div class="expertise-card-back">
+                        <svg class="card-filigree-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+
+                            <g class="center-medallion">
+                                <circle cx="200" cy="280" r="75" class="medallion-ring-outer" />
+                                <circle cx="200" cy="280" r="68" class="medallion-ring-inner" />
+                                <circle cx="200" cy="280" r="45" class="medallion-ring-core" />
+                                
+                                <path d="M 200,195 Q 200,280 285,280 Q 200,280 200,365 Q 200,280 115,280 Q 200,280 200,195 Z" class="medallion-star" />
+                                
+                                <polygon points="200,255 225,280 200,305 175,280" class="center-diamond" />
+                                <circle cx="200" cy="280" r="6" class="filigree-dot-center" />
+                                
+                                <circle cx="200" cy="220" r="2.5" class="filigree-dot" />
+                                <circle cx="200" cy="340" r="2.5" class="filigree-dot" />
+                                <circle cx="140" cy="280" r="2.5" class="filigree-dot" />
+                                <circle cx="260" cy="280" r="2.5" class="filigree-dot" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Production -->
+            <div class="expertise-card" data-card-index="3">
+                <div class="expertise-card-inner">
+                    <!-- Front Side -->
+                    <div class="expertise-card-front">
+                                                <svg class="card-filigree-bg-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                        </svg>
+                        <div class="expertise-card-content">
+<div class="expertise-card-header">
+                            <span class="expertise-card-num">04</span>
+                            <h3 class="expertise-card-title">Production</h3>
+                        </div>
+                        <ul class="expertise-card-list">
+                            <li>Procedural Modeling</li>
+                            <li>3D Asset Creation</li>
+                            <li>3D Performance Optimization</li>
+                            <li>Animation Pipelines</li>
+                            <li>Pipeline Development</li>
+                        </ul>
+                        <div class="expertise-card-bottom">PRODUCTION</div>
+                                            </div>
+</div>
+                    <!-- Back Side -->
+                    <div class="expertise-card-back">
+                        <svg class="card-filigree-svg" viewBox="0 0 400 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <rect x="15" y="15" width="370" height="530" rx="12" class="outer-rim" />
+                            <rect x="23" y="23" width="354" height="514" rx="8" class="inner-rim" />
+                            
+                            <g class="corner-group">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-x">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-y">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+                            <g class="corner-group mirror-xy">
+                                <path d="M 35,65 C 35,45 45,35 65,35 C 50,50 45,60 55,75 C 65,60 80,65 75,85" class="filigree-stroke" />
+                                <path d="M 35,95 C 45,80 60,85 65,105 C 70,85 90,80 85,65" class="filigree-stroke" />
+                                <circle cx="55" cy="55" r="3" class="filigree-dot" />
+                            </g>
+
+                            <g class="center-medallion">
+                                <circle cx="200" cy="280" r="75" class="medallion-ring-outer" />
+                                <circle cx="200" cy="280" r="68" class="medallion-ring-inner" />
+                                <circle cx="200" cy="280" r="45" class="medallion-ring-core" />
+                                
+                                <path d="M 200,195 Q 200,280 285,280 Q 200,280 200,365 Q 200,280 115,280 Q 200,280 200,195 Z" class="medallion-star" />
+                                
+                                <polygon points="200,255 225,280 200,305 175,280" class="center-diamond" />
+                                <circle cx="200" cy="280" r="6" class="filigree-dot-center" />
+                                
+                                <circle cx="200" cy="220" r="2.5" class="filigree-dot" />
+                                <circle cx="200" cy="340" r="2.5" class="filigree-dot" />
+                                <circle cx="140" cy="280" r="2.5" class="filigree-dot" />
+                                <circle cx="260" cy="280" r="2.5" class="filigree-dot" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="section" id="projects" aria-labelledby="projectsTitle">
+    <div class="section-header">
+        <div>
+            <div class="section-label">01 / Selected Work</div>
+            <h2 class="section-title" id="projectsTitle">
+                Design &amp;<br><span class="accent">Code</span> Archive
+            </h2>
+        </div>
+        <p class="section-desc" id="projectsDesc">
+            My curated archive of high-end design and bespoke development. Merging striking visuals with precise engineering to build interfaces that feel as fluid as they look.
+        </p>
+    </div>
+
+    <div class="filter-tabs" id="filterTabs" role="tablist" aria-label="Filter projects">
+        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All Work</button>
+        <button class="filter-tab" data-filter="web" role="tab" aria-selected="false">Web Design</button>
+        <button class="filter-tab" data-filter="app" role="tab" aria-selected="false">Web Apps</button>
+        <button class="filter-tab" data-filter="ecomm" role="tab" aria-selected="false">E-Commerce</button>
+    </div>
+
+    <div class="card-grid" id="cardGrid">
+
+        <!-- Card 0: Featured / Best Website -->
+        <article class="card wide" id="featured-card" data-category="web" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">mybestwebsite.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&h=640&fit=crop&q=80" alt="My Best Website preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title-col">
+                        <div class="card-tags">
+                            <span class="card-tag">Featured Project</span>
+                            <span class="card-tag">3D Experience</span>
+                            <span class="card-tag">Web Design</span>
+                        </div>
+                        <h3 class="card-title">My Best Website</h3>
+                    </div>
+                    <div class="card-desc-col">
+                        <p class="card-desc">An elite, immersive 3D digital experience that pushes the boundaries of web design. Built using React, Three.js, and custom GLSL noise shaders to create a fluid, responsive showcase.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">React / WebGL / GSAP</span>
+                            <div class="card-arrow-unlinked">
+                                Coming Soon
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 1: Urban Cravin -->
+        <article class="card" id="urbancravin-card" data-category="ecomm" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">urbancravin.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&h=460&fit=crop&q=80" alt="Urban Cravin preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/urbancravin-showcase.html" class="card-link-btn" aria-label="View Urban Cravin project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">E-Commerce</span>
+                        <span class="card-tag">Shopify</span>
+                        <span class="card-tag">Streetwear</span>
+                    </div>
+                    <h3 class="card-title">Urban Cravin</h3>
+                    <p class="card-desc">Engineered a high-performance headless Shopify storefront for a Gen-Z streetwear brand. Integrates lightning-fast custom filtering and dynamic AOV cart drawer upsells, achieving a 4.2% storefront conversion rate.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Shopify / Liquid / JS</span>
+                        <a href="projects/urbancravin-showcase.html" class="card-arrow" aria-label="View Urban Cravin">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 2: Jiyo Shop -->
+        <article class="card" id="jiyo-card" data-category="ecomm" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">jiyoshop.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=460&fit=crop&q=80" alt="Jiyo Shop preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/jiyo-showcase.html" class="card-link-btn" aria-label="View Jiyo Shop project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">E-Commerce</span>
+                        <span class="card-tag">Shopify</span>
+                    </div>
+                    <h3 class="card-title">Jiyo Shop</h3>
+                    <p class="card-desc">Designed and developed a bespoke Shopify 2.0 brand experience scaling organic Indian slow fashion. Hand-coded custom clusters and a story-driven Ajax drawer cart to reduce abandonment by 32%.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Shopify / Liquid / UX Architecture</span>
+                        <a href="projects/jiyo-showcase.html" class="card-arrow" aria-label="View Jiyo Shop">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3: Luxe Interiors Studio -->
+        <article class="card" id="luxe-interiors-card" data-category="web" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">luxeinteriors.co</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1618219944342-824e40a13285?w=600&h=460&fit=crop&q=80" alt="Luxe Interiors Studio preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/luxe-interiors.html" class="card-link-btn" aria-label="View Luxe Interiors project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">Web Design</span>
+                        <span class="card-tag">Animation</span>
+                    </div>
+                    <h3 class="card-title">Luxe Interiors Studio</h3>
+                    <p class="card-desc">Architected an immersive digital atelier for a luxury interior design agency. Deployed high-fidelity GSAP ScrollTrigger timelines, custom magnetic cursor interactions, and WebGL noise shader grids.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">HTML5 / CSS3 / GSAP / Three.js</span>
+                        <a href="projects/luxe-interiors.html" class="card-arrow" aria-label="View Luxe Interiors">
+                            View Project
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 4: Dashflow Analytics -->
+        <article class="card" id="dashflow-analytics-card" data-category="app" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">dashflow.app</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=460&fit=crop&q=80" alt="Dashflow Analytics preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/dashflow-analytics.html" class="card-link-btn" aria-label="View Dashflow project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">Web App</span>
+                        <span class="card-tag">Dashboard</span>
+                    </div>
+                    <h3 class="card-title">Dashflow Analytics</h3>
+                    <p class="card-desc">Programmed a real-time data monitoring SaaS dashboard. Scaled data rendering loops, custom Chart.js panels, role-based client controls, and dark/light dynamic theme transitions.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">React / Tailwind CSS / Charts</span>
+                        <a href="projects/dashflow-analytics.html" class="card-arrow" aria-label="View Dashflow">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 5: Terra Verde Shop -->
+        <article class="card" id="terra-verde-card" data-category="ecomm" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">terraverde.store</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=460&fit=crop&q=80" alt="Terra Verde Shop preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/terra-verde.html" class="card-link-btn" aria-label="View Terra Verde project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">E-Commerce</span>
+                        <span class="card-tag">Shopify</span>
+                    </div>
+                    <h3 class="card-title">Terra Verde Shop</h3>
+                    <p class="card-desc">Built an eco-conscious digital catalog with a custom-engineered 3D product configurator natively in Liquid and JavaScript. Reduced checkout friction to boost Average Order Value (AOV) by 42%.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Shopify / Liquid / WebGL Configurator</span>
+                        <a href="projects/terra-verde.html" class="card-arrow" aria-label="View Terra Verde">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 6: Meridian Architecture -->
+        <article class="card" id="meridian-architecture-card" data-category="web" data-magnetic>
+            <div class="card-inner">
+                <div class="card-browser" aria-hidden="true">
+                    <div class="browser-dot bd-r"></div>
+                    <div class="browser-dot bd-y"></div>
+                    <div class="browser-dot bd-g"></div>
+                    <div class="url-bar"><span class="url-text">meridian-arch.com</span></div>
+                </div>
+                <div class="card-image-wrap">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&h=460&fit=crop&q=80" alt="Meridian Architecture preview" loading="lazy" decoding="async">
+                    <div class="card-overlay"></div>
+                    <a href="projects/meridian-architecture.html" class="card-link-btn" aria-label="View Meridian project">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        <span class="card-tag">Web Design</span>
+                        <span class="card-tag">3D</span>
+                    </div>
+                    <h3 class="card-title">Meridian Architecture</h3>
+                    <p class="card-desc">Orchestrated a highly immersive digital narrative for an award-winning architecture firm. Features interactive 3D WebGL-powered structural tours and butter-smooth scrolling animations.</p>
+                    <div class="card-footer">
+                        <span class="card-meta">Three.js / GSAP / WebGL</span>
+                        <a href="projects/meridian-architecture.html" class="card-arrow" aria-label="View Meridian">
+                            View
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<section class="marquee-section" aria-label="Philosophy">
+    <div class="marquee-track" id="marqueeTrack">
+        <span class="marquee-item">Design with Intention</span>
+        <span class="marquee-item accent">—</span>
+        <span class="marquee-item">Build with Precision</span>
+        <span class="marquee-item accent">—</span>
+        <span class="marquee-item">Ship with Pride</span>
+        <span class="marquee-item accent">—</span>
+        <span class="marquee-item">Design with Intention</span>
+        <span class="marquee-item accent">—</span>
+        <span class="marquee-item">Build with Precision</span>
+        <span class="marquee-item accent">—</span>
+        <span class="marquee-item">Ship with Pride</span>
+        <span class="marquee-item accent">—</span>
+    </div>
+</section>
+
+<section class="about-section" id="about" aria-labelledby="aboutHeading">
+    <div class="about-bg-text" aria-hidden="true" style="opacity: 0.02; font-family: 'Cormorant Garamond', serif;">Atelier</div>
+    <div class="about-inner">
+        <div>
+            <div class="section-label" style="margin-bottom: 2rem; letter-spacing: 0.25em; text-transform: uppercase; font-size: 0.75rem; opacity: 0.6;">
+                02 / Commercial Intent
+            </div>
+            <h2 class="about-headline" id="aboutHeading" style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(2.5rem, 4.8vw, 4.2rem); line-height: 1.2; letter-spacing: -0.02em; color: var(--ink);">
+                We build interfaces<br>that turn pure <em style="font-style: italic; font-weight: 400; color: var(--accent);">attention</em><br>into absolute authority.
+            </h2>
+            <div class="about-sub-hook" style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-top: 2rem; margin-bottom: 1.8rem; opacity: 0.9;">
+                Aesthetic Precision. Commercial Power.
+            </div>
+            <ul class="about-manifest" style="list-style: none; padding: 0; margin: 0 0 2.5rem 0; font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 2; color: var(--ink); opacity: 0.85;">
+                <li style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block;"></span>
+                    High-Yield Architecture
+                </li>
+                <li style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block;"></span>
+                    Optimized Conversions
+                </li>
+                <li style="display: flex; align-items: center; gap: 0.8rem;">
+                    <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block;"></span>
+                    Scalable Frameworks
+                </li>
+            </ul>
+            <a href="#contact" class="cta-btn" data-magnetic style="display: inline-flex;">
+                <span>Initiate a Briefing &rarr;</span>
+                <span class="btn-dot"></span>
+            </a>
+        </div>
+        <div>
+            <div class="section-label" style="margin-bottom:2.5rem; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.75rem; opacity: 0.6;">
+                Core Disciplines &amp; Architecture
+            </div>
+            <div class="disciplines-grid" id="disciplinesGrid">
+                <div class="discipline-item">
+                    <span class="discipline-index">01</span>
+                    <span class="discipline-name">Interactive Architecture</span>
+                </div>
+                <div class="discipline-item">
+                    <span class="discipline-index">02</span>
+                    <span class="discipline-name">Creative Direction</span>
+                </div>
+                <div class="discipline-item">
+                    <span class="discipline-index">03</span>
+                    <span class="discipline-name">WebGL &amp; Custom Shading</span>
+                </div>
+                <div class="discipline-item">
+                    <span class="discipline-index">04</span>
+                    <span class="discipline-name">Front-end Engineering</span>
+                </div>
+                <div class="discipline-item">
+                    <span class="discipline-index">05</span>
+                    <span class="discipline-name">Spatial UI / UX Design</span>
+                </div>
+                <div class="discipline-item">
+                    <span class="discipline-index">06</span>
+                    <span class="discipline-name">Fluid Motion &amp; GSAP Systems</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="process-section" id="process" aria-labelledby="processHeading">
+    <div class="process-inner">
+        <div class="section-header" style="margin-bottom:0">
+            <div>
+                <div class="section-label">03 / Methodology</div>
+                <h2 class="section-title" id="processHeading">
+                    The <span class="accent">Methodology</span>
+                </h2>
+            </div>
+            <p class="section-desc">
+                Every project moves through a deliberate sequence — from deep 
+                discovery to meticulous delivery. No shortcuts, no guesswork.
+            </p>
+        </div>
+        <div class="process-steps-container">
+            <div class="process-timeline-line" aria-hidden="true">
+                <div class="process-timeline-progress"></div>
+            </div>
+            <div class="process-steps" id="processSteps">
+                <div class="process-step">
+                    <div class="process-step-svg-circle" aria-hidden="true">
+                        <svg viewBox="0 0 1200 600" preserveAspectRatio="none">
+                            <path d="M 950 90 C 1250 300, 1050 480, 600 520 C 250 520, 150 480, 150 300 C 150 120, 350 80, 600 80 C 850 80, 950 180, 950 180" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="step-num">01</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Discovery</h3>
+                        <p class="step-desc">Mapping intent, clarifying core brand positioning, and solidifying technical project strategy before a single pixel moves.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-svg-circle" aria-hidden="true">
+                        <svg viewBox="0 0 1200 600" preserveAspectRatio="none">
+                            <path d="M 950 90 C 1250 300, 1050 480, 600 520 C 250 520, 150 480, 150 300 C 150 120, 350 80, 600 80 C 850 80, 950 180, 950 180" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="step-num">02</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Visual Architecture</h3>
+                        <p class="step-desc">Translating strategic goals into high-fidelity layouts where spatial balance meets intentional motion systems.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-svg-circle" aria-hidden="true">
+                        <svg viewBox="0 0 1200 600" preserveAspectRatio="none">
+                            <path d="M 950 90 C 1250 300, 1050 480, 600 520 C 250 520, 150 480, 150 300 C 150 120, 350 80, 600 80 C 850 80, 950 180, 950 180" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="step-num">03</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Production Engineering</h3>
+                        <p class="step-desc">Sculpting clean, semantic code optimized for elite speed, absolute fluid response, and zero-compromise architecture.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-svg-circle" aria-hidden="true">
+                        <svg viewBox="0 0 1200 600" preserveAspectRatio="none">
+                            <path d="M 950 90 C 1250 300, 1050 480, 600 520 C 250 520, 150 480, 150 300 C 150 120, 350 80, 600 80 C 850 80, 950 180, 950 180" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="step-num">04</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Deployment</h3>
+                        <p class="step-desc">Rigorous performance auditing followed by a seamless digital release, handing over a permanent asset built to command authority.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section" id="contact" aria-label="Contact">
+    <div id="footer-shader" class="footer-shader-container" aria-hidden="true"></div>
+    <div class="cta-bg-ring-wrap" style="width: 600px; height: 600px;" aria-hidden="true">
+        <div class="cta-bg-ring"></div>
+    </div>
+    <div class="cta-bg-ring-wrap" style="width: 900px; height: 900px;" aria-hidden="true">
+        <div class="cta-bg-ring" style="animation-delay: -2s;"></div>
+    </div>
+    <div class="cta-bg-ring-wrap" style="width: 1200px; height: 1200px;" aria-hidden="true">
+        <div class="cta-bg-ring" style="animation-delay: -4s;"></div>
+    </div>
+    <div class="cta-inner">
+        <div class="cta-eyebrow">04 / Get In Touch</div>
+        <h2 class="cta-headline">
+            Have a project<br>in <em>mind?</em>
+        </h2>
+        <div class="cta-buttons">
+            <a href="mailto:manthan0031@gmail.com" class="btn-primary" data-magnetic>
+                Send a Message
+            </a>
+            <a href="#projects" class="btn-secondary" data-magnetic>
+                View More Work
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="scripts.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- 1. WebGL Translucent Warp Shader Background ---
+        const initThreeShader = () => {
+            const container = document.getElementById("shader-background");
+            if (!container || !window.THREE) return;
+
+            const THREE = window.THREE;
+            container.innerHTML = "";
+
+            const camera = new THREE.Camera();
+            camera.position.z = 1;
+
+            const scene = new THREE.Scene();
+            const geometry = new THREE.PlaneGeometry(2, 2);
+
+            const uniforms = {
+                time: { type: "f", value: 1.0 },
+                resolution: { type: "v2", value: new THREE.Vector2() },
+                mouse: { type: "v2", value: new THREE.Vector2() }
+            };
+
+            const vertexShader = `
+                void main() {
+                    gl_Position = vec4( position, 1.0 );
+                }
+            `;
+
+            const fragmentShader = `
+                #define TWO_PI 6.2831853072
+                #define PI 3.14159265359
+
+                precision highp float;
+                uniform vec2 resolution;
+                uniform float time;
+                uniform vec2 mouse;
+                
+                float random (in float x) {
+                    return fract(sin(x)*1e4);
+                }
+                float random (vec2 st) {
+                    return fract(sin(dot(st.xy,
+                                         vec2(12.9898,78.233)))*
+                        43758.5453123);
+                }
+
+                // 2D Value Noise
+                float noise(in vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    vec2 u = f*f*(3.0-2.0*f);
+                    return mix( mix( random(i + vec2(0.0,0.0)), 
+                                     random(i + vec2(1.0,0.0)), u.x),
+                                mix( random(i + vec2(0.0,1.0)), 
+                                     random(i + vec2(1.0,1.0)), u.x), u.y);
+                }
+
+                // Swirl coordinates around a center point
+                vec2 swirl(vec2 uv, vec2 center, float strength, float radius) {
+                    vec2 d = uv - center;
+                    float dist = length(d);
+                    float percent = max(0.0, radius - dist) / radius;
+                    float theta = percent * percent * strength;
+                    float s = sin(theta);
+                    float c = cos(theta);
+                    uv = vec2(d.x * c - d.y * s, d.x * s + d.y * c) + center;
+                    return uv;
+                }
+
+                void main(void) {
+                    // Normalize uv coordinates to a unified aspect-ratio space
+                    vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                    
+                    // Normalize mouse coordinates to the same aspect-ratio space
+                    vec2 m = (mouse.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                    
+                    // 1. Static base swirl at center
+                    vec2 warpedUv = swirl(uv, vec2(0.0), 0.8, 1.5);
+                    
+                    // 2. Gentle mouse swirl interaction (very subtle cursor warping)
+                    warpedUv = swirl(warpedUv, m, 0.12, 0.60);
+                    
+                    // 3. Multi-step swirl/warp iterations (slightly faster progression)
+                    float t = time * 0.17;
+                    for (int i = 0; i < 6; i++) {
+                        float angle = float(i) * (TWO_PI / 6.0) + t;
+                        vec2 offset = vec2(cos(angle), sin(angle)) * 0.3;
+                        warpedUv = swirl(warpedUv, offset, 0.45, 1.0);
+                    }
+                    
+                    // 3. Domain warp noise
+                    vec2 q = vec2(0.0);
+                    q.x = noise(warpedUv * 3.0 + vec2(t * 0.4, t * 0.2));
+                    q.y = noise(warpedUv * 3.0 + vec2(t * -0.2, t * 0.5));
+                    
+                    vec2 r = vec2(0.0);
+                    r.x = noise(warpedUv * 3.0 + 4.0 * q + vec2(1.3, 4.5) + t * 0.1);
+                    r.y = noise(warpedUv * 3.0 + 4.0 * q + vec2(7.2, 2.3) + t * 0.15);
+                    
+                    vec2 checkUv = (warpedUv + r * 0.25) * 6.0;
+                    
+                    // 4. "Checks" shape checkerboard (softness = 1)
+                    float checkVal = sin(checkUv.x) * sin(checkUv.y);
+                    // Soft interpolation for checks
+                    float checks = smoothstep(-0.6, 0.6, checkVal);
+                    
+                    // 5. Harmonious Parchment Color Theme (c0 to c3)
+                    vec3 c0 = vec3(0.88, 0.84, 0.80); // Darker parchment base
+                    vec3 c1 = vec3(0.92, 0.89, 0.85); // Darker warm light cream
+                    vec3 c2 = vec3(0.79, 0.73, 0.67); // Darker deep parchment
+                    vec3 c3 = vec3(0.90, 0.64, 0.53); // Darker soft terracotta
+
+                    // Intersecting color mixing
+                    float mixVal = noise(warpedUv * 1.5 + r * 0.4 + t * 0.05);
+                    
+                    vec3 colA = mix(c0, c1, mixVal);
+                    vec3 colB = mix(c2, c3, mixVal);
+                    vec3 finalColor = mix(colA, colB, checks);
+                    
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader,
+                transparent: true,
+                depthWrite: false,
+                depthTest: false
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false }); // no antialias on fullscreen BG
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // cap for perf
+            container.appendChild(renderer.domElement);
+
+            // Cursor responsive tracking with smooth interpolation (lerp)
+            let targetMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            let currentMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+            window.addEventListener("mousemove", (e) => {
+                targetMouse.x = e.clientX;
+                targetMouse.y = window.innerHeight - e.clientY;
+            }, { passive: true });
+
+            const onWindowResize = () => {
+                const rect = container.getBoundingClientRect();
+                renderer.setSize(rect.width, rect.height);
+                uniforms.resolution.value.x = renderer.domElement.width;
+                uniforms.resolution.value.y = renderer.domElement.height;
+                targetMouse.x = rect.width / 2;
+                targetMouse.y = rect.height / 2;
+            };
+
+            onWindowResize();
+            window.addEventListener("resize", onWindowResize, false);
+            // Dynamic shader velocity (time) scale on discipline hovers
+            let targetTimeSpeed = 1.0;
+            let currentTimeSpeed = 1.0;
+
+            const setupDisciplineHovers = () => {
+                const items = document.querySelectorAll('.discipline-item');
+                items.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        targetTimeSpeed = 4.2;
+                    });
+                    item.addEventListener('mouseleave', () => {
+                        targetTimeSpeed = 1.0;
+                    });
+                });
+            };
+            setupDisciplineHovers();
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                // Skip rendering when tab is hidden (saves GPU)
+                if (document.hidden) return;
+
+                currentMouse.x += (targetMouse.x - currentMouse.x) * 0.07;
+                currentMouse.y += (targetMouse.y - currentMouse.y) * 0.07;
+                currentTimeSpeed += (targetTimeSpeed - currentTimeSpeed) * 0.08;
+                uniforms.time.value += 0.016 * currentTimeSpeed;
+                uniforms.mouse.value.x = currentMouse.x;
+                uniforms.mouse.value.y = currentMouse.y;
+                renderer.render(scene, camera);
+                window.shaderBackgroundReady = true;
+            };
+
+            animate();
+        };
+
+        // --- 2. Calligraphic Stroke Drawing Animation (Underline and Hover Morph) ---
+        const animateCalligraphy = () => {
+            // Draw handwritten underline
+            const underlinePath = document.querySelector(".underline-path");
+            if (underlinePath) {
+                const length = underlinePath.getTotalLength();
+                underlinePath.style.strokeDasharray = length;
+                underlinePath.style.strokeDashoffset = length;
+                // Force reflow
+                underlinePath.getBoundingClientRect();
+                underlinePath.style.transition = `stroke-dashoffset 2.6s cubic-bezier(0.25, 1, 0.5, 1) 1.4s`;
+                underlinePath.style.strokeDashoffset = "0";
+
+                // Setup interactive hover morph using GSAP for absolute reliability
+                const highlightEl = document.querySelector(".underline-highlight");
+                if (highlightEl) {
+                    highlightEl.addEventListener("mouseenter", () => {
+                        gsap.to(underlinePath, {
+                            attr: { d: "M 0,10 Q 75,20 150,10 Q 225,0 300,10" },
+                            duration: 0.8,
+                            ease: "power2.out"
+                        });
+                    });
+                    highlightEl.addEventListener("mouseleave", () => {
+                        gsap.to(underlinePath, {
+                            attr: { d: "M 0,10 Q 75,0 150,10 Q 225,20 300,10" },
+                            duration: 0.8,
+                            ease: "power2.out"
+                        });
+                    });
+                }
+            }
+        };
+
+        // --- 3. Dynamic Calligraphic Sparkles (SparklesText Component adaptation - Aggressive Twinkling) ---
+        const initSparkles = () => {
+            const container = document.querySelector(".sparkles-container");
+            if (!container) return;
+
+            const colors = ["#FF6B35", "#E6C594", "#F4A261"];
+            const sparklesCount = 12; // Adjusted count for elegant density
+            
+            for (let i = 0; i < sparklesCount; i++) {
+                createSparkle(container, colors);
+            }
+        };
+
+        const createSparkle = (container, colors) => {
+            const sparkle = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            sparkle.setAttribute("viewBox", "0 0 21 21");
+            sparkle.style.position = "absolute";
+            sparkle.style.width = "18px"; // Slightly larger
+            sparkle.style.height = "18px";
+            sparkle.style.pointerEvents = "none";
+            sparkle.style.zIndex = "20";
+            
+            const x = Math.random() * 100;
+            const y = Math.random() * 100 - 15;
+            sparkle.style.left = `${x}%`;
+            sparkle.style.top = `${y}%`;
+            
+            const scale = Math.random() * 0.8 + 0.45; // Larger scale variance
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const delay = Math.random() * 1.2; // Faster start
+            const duration = Math.random() * 0.7 + 0.55; // Fast blink
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", "M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 20.7858 11.1746 20.1562L9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z");
+            path.setAttribute("fill", color);
+            
+            sparkle.appendChild(path);
+            container.appendChild(sparkle);
+            
+            gsap.set(sparkle, { opacity: 0, scale: 0, rotation: 0 });
+            
+            const tl = gsap.timeline({ repeat: -1, delay: delay });
+            tl.to(sparkle, {
+                opacity: 1,
+                scale: scale,
+                rotation: 90,
+                duration: duration * 0.4,
+                ease: "power2.out"
+            })
+            .to(sparkle, {
+                opacity: 0,
+                scale: 0,
+                rotation: 180,
+                duration: duration * 0.6,
+                ease: "power2.in",
+                onComplete: () => {
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.top = `${Math.random() * 100 - 15}%`;
+                }
+            });
+        };
+
+        // --- 4. Interactive Click Ripple effect ---
+        const initClickRipples = () => {
+            document.addEventListener("click", (e) => {
+                // Ignore clicks on links or interactive buttons
+                if (e.target.closest("a, button")) return;
+
+                const ripple = document.createElement("div");
+                ripple.className = "ripple-effect";
+                ripple.style.left = `${e.clientX}px`;
+                ripple.style.top = `${e.clientY}px`;
+                document.body.appendChild(ripple);
+
+                gsap.fromTo(ripple,
+                    { width: 4, height: 4, opacity: 0.85, scale: 1 },
+                    {
+                        width: 80,
+                        height: 80,
+                        opacity: 0,
+                        scale: 2.2,
+                        duration: 1.0,
+                        ease: "power2.out",
+                        onComplete: () => ripple.remove()
+                    }
+                );
+            });
+        };
+
+        // --- 5. Mouse Spotlight Glow — uses transform (no layout reflow) ---
+        const initMouseSpotlight = () => {
+            const mouseGlow = document.getElementById("mouse-gradient");
+            if (!mouseGlow || window.matchMedia('(pointer: coarse)').matches) return;
+
+            let glowX = window.innerWidth / 2;
+            let glowY = window.innerHeight / 2;
+            let targetGlowX = glowX;
+            let targetGlowY = glowY;
+            let rafId = null;
+
+            window.addEventListener("mousemove", (e) => {
+                targetGlowX = e.clientX;
+                targetGlowY = e.clientY;
+                mouseGlow.style.opacity = "1";
+                if (!rafId) rafId = requestAnimationFrame(updateGlow);
+            }, { passive: true });
+
+            window.addEventListener("mouseleave", () => {
+                mouseGlow.style.opacity = "0";
+            });
+
+            const updateGlow = () => {
+                glowX += (targetGlowX - glowX) * 0.08;
+                glowY += (targetGlowY - glowY) * 0.08;
+                // transform: avoids layout reflow (vs left/top)
+                mouseGlow.style.transform = `translate(calc(${glowX}px - 50%), calc(${glowY}px - 50%))`;
+                const dx = Math.abs(targetGlowX - glowX);
+                const dy = Math.abs(targetGlowY - glowY);
+                if (dx > 0.5 || dy > 0.5) {
+                    rafId = requestAnimationFrame(updateGlow);
+                } else {
+                    rafId = null;
+                }
+            };
+        };
+
+        // Run initializations
+        initThreeShader();
+        initClickRipples();
+        initMouseSpotlight();
+        
+        // Wait slightly for FOUC reveal to finish before drawing calligraphic lines
+        setTimeout(() => {
+            animateCalligraphy();
+            initSparkles();
+        }, 100);
+    });
+</script>
+
+</body>
+</html>
